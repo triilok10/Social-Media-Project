@@ -1,0 +1,122 @@
+﻿.Center-Mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-Mobile {
+    margin-right: 10px;
+}
+
+.left-Mobile-img {
+    height: 60vh;
+}
+
+.right-Mobile {
+    border: 1px solid gray;
+    margin-left: 10px;
+    width: 350px;
+    margin-top: 75px;
+}
+
+.right-MobileSave {
+    border: 1px solid gray;
+    width: 350px;
+    margin-top: 75px;
+}
+
+.Signup-Instagram-Bottom {
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.right-Instagram {
+    font-size: 31px;
+    font-weight: 400;
+    font-family: cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
+
+.right-userInfo {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+}
+
+.input-UserInfo {
+    margin: 5px;
+    width: 280px;
+    font-size: 12px;
+    padding: 10px;
+    background-color: #f7f7f7a1;
+}
+
+.input-validate {
+    background-color: #44bcf0;
+    text-align: center;
+    padding: 8px;
+    font-size: 16px;
+    font-family: cursive;
+    color: white;
+    border-radius: 5px;
+    margin: 18px 33px;
+    width: 280px;
+}
+
+.right-Instagram-Bottom {
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.signUp-LoginBio {
+    border: 1px solid gray;
+    width: 600px;
+    height: auto;
+    margin: 10px 0px;
+    padding: 20px;
+}
+
+
+.LoginBio-DataSave {
+    text-align: center;
+    display: block;
+    padding: 10px;
+}
+
+.LoginBio-DataSaveInput {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border: 1px solid grey;
+}
+
+.LoginBio-Date {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.LoginBio-DataSaveDate {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid grey;
+    background-color: #f8f8f8
+}
+
+.btnSave {
+    margin-top: 10px;
+    background-color: #1b92ce;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+}

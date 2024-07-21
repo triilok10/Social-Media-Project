@@ -1,0 +1,111 @@
+﻿@model Social_Media_Project.Models.Account
+@{
+    ViewData["Title"] = "Signup";
+}
+<link href="~/js/toastr.min.css" rel="stylesheet" />
+@if (TempData["errorMessage"] != null)
+{
+    <script>
+        toastr.error("@TempData["errorMessage"]");
+    </script>
+}
+
+
+
+<div class="Center-Mobile">
+    <div class="d-inline-flex justify-content-between align-items-center">
+        <div>
+            <form asp-controller="Account" asp-action="Signup" method="post">
+                <div class="right-MobileSave">
+                    <div class="right-Instagram">
+                        Instagram
+                    </div>
+                    <div>
+                        <div class="right-userInfo">
+                            <div class="userInfo-Username">
+                                <input id="Username" asp-for="Phone" value="" placeholder="Mobile Number" class="input-UserInfo" />
+                            </div>
+                            <div class="userInfo-Password">
+                                <input asp-for="Email" placeholder="Email Address" class="input-UserInfo" />
+                            </div>
+                            <div class="userInfo-Password">
+                                <input asp-for="Fullname" placeholder="Full Name" class="input-UserInfo" />
+                            </div>
+                            <div class="userInfo-Password">
+                                <input asp-for="Username" placeholder="Username" class="input-UserInfo" />
+                            </div>
+                            <div class="userInfo-Password">
+                                <input asp-for="Password" placeholder="Password" class="input-UserInfo" />
+                            </div>
+                            <div class="userInfo-Password">
+                                <input asp-for="ConfirmPassword" placeholder="Confirm Password" class="input-UserInfo" />
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="input-validate">
+                                Sign up
+                            </button>
+                        </div>
+                        <div>
+                            <p class="text-center">Log in with Facebook</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center right-MobileSave Signup-Instagram-Bottom">
+                    Have an account?<a href="@Url.Action("Index","Home")">Log in</a>
+                </div>
+            </form>
+            <div class="signUp-LoginBio d-none">
+                <form action="/" method="post">
+                    <div class="LoginBio-Data">
+                        <label asp-for="ProfilePhoto" class="LoginBio-DataSave">Add Profile Photo</label>
+                        <div class="LoginBio-DataSaveDate">
+                            <div>
+                                <input type="file" asp-for="ProfilePhoto" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="LoginBio-Data">
+                        <label asp-for="DateOfBirth" class="LoginBio-DataSave">Date Of Birth</label>
+                        <input type="date" asp-for="DateOfBirth" class="LoginBio-DataSaveInput" />
+                    </div>
+                    <div class="LoginBio-Data">
+                        <label asp-for="Bio" class="LoginBio-DataSave">Bio:</label>
+                        <textarea type="text" asp-for="Bio" placeholder="Describe yourself" class="LoginBio-DataSaveInput"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="LoginBio-DataSaveInput btnSave">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+</script>
+
+
+
+
+
+

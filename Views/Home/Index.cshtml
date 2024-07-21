@@ -1,0 +1,49 @@
+﻿@model Social_Media_Project.Models.Account
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="Center-Mobile">
+    <div class="d-inline-flex justify-content-between align-items-center">
+        <div class="left-Mobile">
+            <img src="../../images/mobile.jpg" class="left-Mobile-img" />
+        </div>
+        <div>
+            <div class="right-Mobile">
+                <div class="right-Instagram">
+                    Instagram
+                </div>
+                <div>
+                    <form action="/" method="post">
+                        <div class="right-userInfo">
+                            <div class="userInfo-Username">
+                                <input asp-for="Username" placeholder="Phone number, username or email address" class="input-UserInfo" />
+                            </div>
+                            <div class="userInfo-Password">
+                                <input asp-for="Password" placeholder="Password" class="input-UserInfo" />
+                            </div>
+                        </div>
+                    </form>
+                    <div>
+                        <button type="submit" class="input-validate">
+                            Log in
+                        </button>
+                    </div>
+                    <div>
+                        <p class="text-center">Log in with Facebook</p>
+                    </div>
+                    <div class="text-center">
+                        <a href="@Url.Action("ForgottenPassword","Account")">Forgotten your password?</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center right-Mobile right-Instagram-Bottom">
+                Don't have an account? <a href="@Url.Action("Signup","Account")">Sign up</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
