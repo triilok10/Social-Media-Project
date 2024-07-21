@@ -9,7 +9,7 @@ namespace Social_Media_Project.Controllers.API
     public class AccountAPI : ControllerBase
     {
         [HttpPost]
-        public IActionResult Signup(Account pAccount)
+        public IActionResult Signup([FromBody]Account pAccount)
         {
             return Ok();
         }
