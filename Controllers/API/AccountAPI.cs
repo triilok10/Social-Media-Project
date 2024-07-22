@@ -8,8 +8,15 @@ namespace Social_Media_Project.Controllers.API
     [ApiController]
     public class AccountAPI : ControllerBase
     {
+        private readonly string _connectionString;
+
+        public AccountAPI(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("CustomConnection");
+        }
+
         [HttpPost]
-        public IActionResult Signup([FromBody]Account pAccount)
+        public IActionResult Signup([FromBody] Account pAccount)
         {
             return Ok();
         }
