@@ -28,29 +28,35 @@ namespace Social_Media_Project.Controllers
         {
             try
             {
-
-                string Message = "";
-                if (string.IsNullOrWhiteSpace(pAccount.Username) || string.IsNullOrWhiteSpace(pAccount.Fullname) || string.IsNullOrWhiteSpace(pAccount.Password) || string.IsNullOrWhiteSpace(pAccount.Phone) ||
-                    string.IsNullOrWhiteSpace(pAccount.ConfirmPassword) || string.IsNullOrWhiteSpace(pAccount.Email))
+                if (pAccount.hdnId == 1)
                 {
-                    Message = "Please fill the required details.";
-                    TempData["errorMessage"] = Message;
-                    TempData.Keep("errorMessage");
+                    string Message = "";
+                    if (string.IsNullOrWhiteSpace(pAccount.Username) || string.IsNullOrWhiteSpace(pAccount.Fullname) || string.IsNullOrWhiteSpace(pAccount.Password) || string.IsNullOrWhiteSpace(pAccount.Phone) ||
+                        string.IsNullOrWhiteSpace(pAccount.ConfirmPassword) || string.IsNullOrWhiteSpace(pAccount.Email))
+                    {
+                        Message = "Please fill the required details.";
+                        TempData["errorMessage"] = Message;
+                        TempData.Keep("errorMessage");
+                    }
+                    else
+                    {
+                        string url = baseUrl + "api/AccountAPI/Signup";
+                        string jsonBody = JsonConvert.SerializeObject(pAccount);
+                        StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            string resData = JsonConvert.SerializeObject(res);
+                        }
+                    }
                     return View();
                 }
                 else
                 {
-                    string url = baseUrl + "api/AccountAPI/Signup";
-                    string jsonBody = JsonConvert.SerializeObject(pAccount);
-                    StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-                    HttpResponseMessage res = await _httpClient.PostAsync(url, content);
-                    if (res.IsSuccessStatusCode)
-                    {
-                        string resBody = await res.Content.ReadAsStringAsync();
-                        string resData = JsonConvert.SerializeObject(res);
-                    }
+                    return View();
                 }
-                return View();
+
             }
             catch (Exception ex)
             {

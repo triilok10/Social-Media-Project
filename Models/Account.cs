@@ -3,24 +3,26 @@
     public class Account
     {
         //Username
-        public string?  Username { get; set; }
+        public string? Username { get; set; }
         //Password
-        public string?  Password { get; set; }
+        public string? Password { get; set; }
         //Email
-        public string?  Email { get; set; }
+        public string? Email { get; set; }
         //Phone
-        public string?  Phone { get; set; }
+        public string? Phone { get; set; }
         //Fullname
-        public string?  Fullname { get; set; }
+        public string? Fullname { get; set; }
         //ConfirmPassword
-        public string?  ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
         //DateOfBirth
         public DateOnly? DateOfBirth { get; set; }
         //ProfilePhoto
         public IFormFile? ProfilePhoto { get; set; }
         //ProfilePhotoPath
-        public string?  ProfilePhotoPath { get; }
+        public string? ProfilePhotoPath { get; }
         //Bio
-        public string?  Bio { get; set; }
+        public string? Bio { get; set; }
+        //Hidden Id
+        public int? hdnId { get; set; }
     }
 }
