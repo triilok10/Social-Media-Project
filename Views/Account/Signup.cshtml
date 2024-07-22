@@ -15,7 +15,7 @@
 <div class="Center-Mobile">
     <div class="d-inline-flex justify-content-between align-items-center">
         <div>
-            <form asp-controller="Account" asp-action="Signup" method="post">
+            <form asp-controller="Account" asp-action="Signup" method="post" id="SignUpForm">
                 <div class="right-MobileSave">
                     <div class="right-Instagram">
                         Instagram
@@ -24,22 +24,22 @@
                         <div class="right-userInfo">
                             <div class="userInfo-Username">
                                 <input type="hidden" asp-for="hdnId" value="1" />
-                                <input id="Username" asp-for="Phone" value="" placeholder="Mobile Number" class="input-UserInfo" />
+                                <input asp-for="Phone" id="Phone" value="" placeholder="Mobile Number" class="input-UserInfo" />
                             </div>
                             <div class="userInfo-Password">
-                                <input asp-for="Email" placeholder="Email Address" class="input-UserInfo" />
+                                <input asp-for="Email" id="Email" placeholder="Email Address" class="input-UserInfo" />
                             </div>
                             <div class="userInfo-Password">
-                                <input asp-for="Fullname" placeholder="Full Name" class="input-UserInfo" />
+                                <input asp-for="Fullname" id="Fullname" placeholder="Full Name" class="input-UserInfo" />
                             </div>
                             <div class="userInfo-Password">
-                                <input asp-for="Username" placeholder="Username" class="input-UserInfo" />
+                                <input asp-for="Username" id="Username" placeholder="Username" class="input-UserInfo" />
                             </div>
                             <div class="userInfo-Password">
-                                <input asp-for="Password" placeholder="Password" class="input-UserInfo" />
+                                <input asp-for="Password" id="Password" placeholder="Password" class="input-UserInfo" />
                             </div>
                             <div class="userInfo-Password">
-                                <input asp-for="ConfirmPassword" placeholder="Confirm Password" class="input-UserInfo" />
+                                <input asp-for="ConfirmPassword" id="ConfirmPassword" placeholder="Confirm Password" class="input-UserInfo" />
                             </div>
                         </div>
                         <div>
@@ -86,24 +86,48 @@
 
 </div>
 <script type="text/javascript">
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
+    $(document).ready(function () {
+        //toastr options
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        //form validation
+        $("#SignUpForm").validate({
+            rules: {
+                Phone: { required: true },
+                Email: { required: true },
+                Fullname: { required: true },
+                Username: { required: true },
+                Password: { required: true },
+                ConfirmPassword: { required: true }
+            },
+            messages: {
+                Phone: { required: "Please enter your phone number." },
+                Email: { required: "Please enter your email address." },
+                Fullname: { required: "Please enter your full name." },
+                Username: { required: "Please enter a username." },
+                Password: { required: "Please enter a password." },
+                ConfirmPassword: { required: "Please confirm your password." }
+            }
+        });
+    });
 </script>
+
 
 
 
