@@ -1,7 +1,8 @@
 ﻿namespace Social_Media_Project.Models
 {
     public class Account
-    {
+    {   //Id
+        public int Id { get; set; }
         //Username
         public string? Username { get; set; }
         //Password
@@ -19,7 +20,7 @@
         //ProfilePhoto
         public IFormFile? ProfilePhoto { get; set; }
         //ProfilePhotoPath
-        public string? ProfilePhotoPath { get; }
+        public string? ProfilePhotoPath { get; set}
         //Bio
         public string? Bio { get; set; }
         //Hidden Id

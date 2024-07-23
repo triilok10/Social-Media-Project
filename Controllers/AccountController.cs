@@ -27,9 +27,10 @@ namespace Social_Media_Project.Controllers
         #region "SignUp Get/Post"
 
         [HttpGet, HttpPost]
-        public async Task<IActionResult> Signup(Account pAccount)
+        public async Task<IActionResult> Signup(Account pAccount, IFormFile ProfilePhoto)
         {
             string Message = "";
+            string Id = "";
             try
             {
                 if (pAccount.hdnId == 1)
@@ -52,6 +53,7 @@ namespace Social_Media_Project.Controllers
                             string resBody = await res.Content.ReadAsStringAsync();
                             dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
                             Message = resData.msg;
+                            Id = resData.id;
                             if (Message == "Password and Confirm-Password didn't match!")
                             {
                                 TempData["errorMessage"] = Message;
@@ -69,10 +71,31 @@ namespace Social_Media_Project.Controllers
                             }
                             else
                             {
+                                pAccount.Id = Convert.ToInt32(Id);
                                 TempData["successMessage"] = Message;
                                 TempData.Keep("successMessage");
+                                return View(pAccount);
                             }
                         }
+                    }
+                    return View();
+                }
+                else if (string.IsNullOrWhiteSpace(pAccount.Id.ToString()))
+                {
+                    if (pAccount.ProfilePhoto != null && ProfilePhoto.Length > 0)
+                    {
+                        string FileName = Path.GetFileName(ProfilePhoto.FileName);
+                        string FileData = Path.Combine("wwwroot", "images", "UserData", FileName);
+                        using (var Stream = new FileStream(FileData, FileMode.Create))
+                        {
+                            await ProfilePhoto.CopyToAsync(Stream);
+                        }
+                        pAccount.ProfilePhotoPath = "/images/UserData/" + FileName;
+
+                        string url = baseUrl + "api/AccountAPI/Signup";
+                        string jsonBody = JsonConvert.SerializeObject(pAccount);
+                        StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
                     }
                     return View();
                 }

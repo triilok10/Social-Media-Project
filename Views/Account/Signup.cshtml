@@ -13,7 +13,7 @@
 {
     <script>
         toastr.success("@TempData["successMessage"]");
-
+        
         $(document).ready(function () {
             $("#SignUpForm").addClass('d-none');
             $("#SignUpBioForm").removeClass('d-none');
@@ -69,7 +69,8 @@
                 </div>
             </form>
             <div class="signUp-LoginBio d-none" id="SignUpBioForm">
-                <form action="/" method="post" id="bioForm">
+                <form asp-controller="Account" asp-action="Signup" method="post" id="bioForm">
+                    <input type="hidden" asp-for="Id" />
                     <div class="LoginBio-Data">
                         <label asp-for="ProfilePhoto" class="LoginBio-DataSave">Add Profile Photo</label>
                         <div id="ProfilePhotoPreview" class="mt-2" style="display:flex; justify-content:center;">

@@ -23,6 +23,7 @@ namespace Social_Media_Project.Controllers.API
         public IActionResult Signup([FromBody] Account pAccount)
         {
             string Message = "";
+            string AccountId = "";
             try
             {
                 if (pAccount == null)
@@ -53,12 +54,17 @@ namespace Social_Media_Project.Controllers.API
 
                     SqlParameter outputMessage = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
                     outputMessage.Direction = ParameterDirection.Output;
+                    SqlParameter signupId = new SqlParameter("@AccountId", SqlDbType.NVarChar, 20);
+                    signupId.Direction = ParameterDirection.Output;
+
                     cmd.Parameters.Add(outputMessage);
+                    cmd.Parameters.Add(signupId);
                     cmd.ExecuteNonQuery();
                     Message = cmd.Parameters["@Message"].Value.ToString();
+                    AccountId = cmd.Parameters["@AccountId"].Value.ToString();
                 }
 
-                return Ok(new { msg = Message });
+                return Ok(new { msg = Message, id = AccountId });
             }
             catch (SqlException ex)
             {
