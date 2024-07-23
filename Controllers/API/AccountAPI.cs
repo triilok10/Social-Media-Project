@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Social_Media_Project.Models;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Social_Media_Project.Controllers.API
@@ -16,8 +17,10 @@ namespace Social_Media_Project.Controllers.API
             _connectionString = configuration.GetConnectionString("CustomConnection");
         }
 
+        #region "SignUp Get/Post"
+
         [HttpPost]
-        public async Task<IActionResult> Signup([FromBody] Account pAccount)
+        public IActionResult Signup([FromBody] Account pAccount)
         {
             string Message = "";
             try
@@ -25,40 +28,51 @@ namespace Social_Media_Project.Controllers.API
                 if (pAccount == null)
                 {
                     Message = "Please fill the required inputs.";
+                    return Ok(new { msg = Message });
                 }
 
                 if (pAccount.Password != pAccount.ConfirmPassword)
                 {
-                    Message = "Password and Confirm Password doesn't match!";
+                    Message = "Password and Confirm-Password didn't match!";
                     return Ok(new { msg = Message });
                 }
 
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
-                    await con.OpenAsync();
+                    con.Open();
 
                     SqlCommand cmd = new SqlCommand("usp_SignUp", con);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@Mobile", pAccount.Phone);
                     cmd.Parameters.AddWithValue("@Email", pAccount.Email);
                     cmd.Parameters.AddWithValue("@Fullname", pAccount.Fullname);
                     cmd.Parameters.AddWithValue("@NewPassword", pAccount.Password);
                     cmd.Parameters.AddWithValue("@ConfirmPassword", pAccount.ConfirmPassword);
                     cmd.Parameters.AddWithValue("@Username", pAccount.Username);
-                    cmd.ExecuteNonQueryAsync();
+
+                    SqlParameter outputMessage = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
+                    outputMessage.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(outputMessage);
+                    cmd.ExecuteNonQuery();
+                    Message = cmd.Parameters["@Message"].Value.ToString();
                 }
-                Message = $"{pAccount.Fullname} account created!";
+
+                return Ok(new { msg = Message });
             }
             catch (SqlException ex)
             {
                 Message = ex.Message;
-                return BadRequest(new { msg = Message });
+                return Ok(new { msg = Message });
             }
             catch (Exception ex)
             {
                 Message = ex.Message;
+                return Ok(new { msg = Message });
             }
-            return Ok(new { msg = Message });
         }
+
+        #endregion
+
     }
 }

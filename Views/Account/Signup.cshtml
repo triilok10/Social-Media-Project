@@ -9,6 +9,18 @@
         toastr.error("@TempData["errorMessage"]");
     </script>
 }
+@if (TempData["successMessage"] != null)
+{
+    <script>
+        toastr.success("@TempData["successMessage"]");
+
+        $(document).ready(function () {
+            $("#SignUpForm").addClass('d-none');
+            $("#SignUpBioForm").removeClass('d-none');
+        });
+
+    </script>
+}
 
 
 
@@ -24,7 +36,7 @@
                         <div class="right-userInfo">
                             <div class="userInfo-Username">
                                 <input type="hidden" asp-for="hdnId" value="1" />
-                                <input asp-for="Phone" id="Phone" value="" placeholder="Mobile Number" class="input-UserInfo" />
+                                <input asp-for="Phone" id="Phone" placeholder="Mobile Number" class="input-UserInfo" />
                             </div>
                             <div class="userInfo-Password">
                                 <input asp-for="Email" id="Email" placeholder="Email Address" class="input-UserInfo" />
@@ -56,13 +68,16 @@
                     Have an account?<a href="@Url.Action("Index","Home")">Log in</a>
                 </div>
             </form>
-            <div class="signUp-LoginBio d-none">
-                <form action="/" method="post">
+            <div class="signUp-LoginBio d-none" id="SignUpBioForm">
+                <form action="/" method="post" id="bioForm">
                     <div class="LoginBio-Data">
                         <label asp-for="ProfilePhoto" class="LoginBio-DataSave">Add Profile Photo</label>
+                        <div id="ProfilePhotoPreview" class="mt-2" style="display:flex; justify-content:center;">
+                            <img id="previewImage" src="#" alt="Preview" style="max-width: 200px; max-height: 200px; display: none; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
+                        </div>
                         <div class="LoginBio-DataSaveDate">
                             <div>
-                                <input type="file" asp-for="ProfilePhoto" />
+                                <input type="file" id="ProfilePhotoInput" asp-for="ProfilePhoto" onchange="previewProfilePhoto(event)" />
                             </div>
                         </div>
                     </div>
@@ -126,6 +141,22 @@
             }
         });
     });
+
+    function previewProfilePhoto(event) {
+        var input = event.target;
+        var preview = document.getElementById('previewImage');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 
 

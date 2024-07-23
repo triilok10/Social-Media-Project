@@ -23,6 +23,9 @@ namespace Social_Media_Project.Controllers
         {
             return View();
         }
+
+        #region "SignUp Get/Post"
+
         [HttpGet, HttpPost]
         public async Task<IActionResult> Signup(Account pAccount)
         {
@@ -49,10 +52,25 @@ namespace Social_Media_Project.Controllers
                             string resBody = await res.Content.ReadAsStringAsync();
                             dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
                             Message = resData.msg;
-                            if (Message == "Password and Confirm Password doesn't match!")
+                            if (Message == "Password and Confirm-Password didn't match!")
                             {
                                 TempData["errorMessage"] = Message;
                                 TempData.Keep("errorMessage");
+                            }
+                            else if (Message == "Username already exists.")
+                            {
+                                TempData["errorMessage"] = Message;
+                                TempData.Keep("errorMessage");
+                            }
+                            else if (Message == "Email already exists.")
+                            {
+                                TempData["errorMessage"] = Message;
+                                TempData.Keep("errorMessage");
+                            }
+                            else
+                            {
+                                TempData["successMessage"] = Message;
+                                TempData.Keep("successMessage");
                             }
                         }
                     }
@@ -69,6 +87,9 @@ namespace Social_Media_Project.Controllers
                 return View(ex.Message);
             }
         }
+
+        #endregion
+
         public IActionResult ForgottenPassword()
         {
             return View();
