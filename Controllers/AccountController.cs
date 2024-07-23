@@ -26,11 +26,11 @@ namespace Social_Media_Project.Controllers
         [HttpGet, HttpPost]
         public async Task<IActionResult> Signup(Account pAccount)
         {
+            string Message = "";
             try
             {
                 if (pAccount.hdnId == 1)
                 {
-                    string Message = "";
                     if (string.IsNullOrWhiteSpace(pAccount.Username) || string.IsNullOrWhiteSpace(pAccount.Fullname) || string.IsNullOrWhiteSpace(pAccount.Password) || string.IsNullOrWhiteSpace(pAccount.Phone) ||
                         string.IsNullOrWhiteSpace(pAccount.ConfirmPassword) || string.IsNullOrWhiteSpace(pAccount.Email))
                     {
@@ -47,7 +47,13 @@ namespace Social_Media_Project.Controllers
                         if (res.IsSuccessStatusCode)
                         {
                             string resBody = await res.Content.ReadAsStringAsync();
-                            string resData = JsonConvert.SerializeObject(res);
+                            dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                            Message = resData.msg;
+                            if (Message == "Password and Confirm Password doesn't match!")
+                            {
+                                TempData["errorMessage"] = Message;
+                                TempData.Keep("errorMessage");
+                            }
                         }
                     }
                     return View();
