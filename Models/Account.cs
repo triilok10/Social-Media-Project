@@ -16,7 +16,7 @@
         //ConfirmPassword
         public string? ConfirmPassword { get; set; }
         //DateOfBirth
-        public DateOnly? DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         //ProfilePhoto
         public IFormFile? ProfilePhoto { get; set; }
         //ProfilePhotoPath

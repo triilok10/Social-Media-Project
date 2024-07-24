@@ -47,6 +47,7 @@ namespace Social_Media_Project.Controllers.API
                         SqlCommand cmd = new SqlCommand("usp_SignUp", con);
                         cmd.CommandType = CommandType.StoredProcedure;
 
+                        cmd.Parameters.AddWithValue("@Mode", 1);
                         cmd.Parameters.AddWithValue("@Mobile", pAccount.Phone);
                         cmd.Parameters.AddWithValue("@Email", pAccount.Email);
                         cmd.Parameters.AddWithValue("@Fullname", pAccount.Fullname);
@@ -70,7 +71,26 @@ namespace Social_Media_Project.Controllers.API
                 }
                 else
                 {
-                    return Ok(new { msg = Message, id = AccountId });
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand("usp_SignUp", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Mode", 2);
+                        cmd.Parameters.AddWithValue("@Id", pAccount.Id);
+                        cmd.Parameters.AddWithValue("@ProfilePhotoPath", pAccount.ProfilePhotoPath);
+                        cmd.Parameters.AddWithValue("@Bio", pAccount.Bio);
+                        cmd.Parameters.AddWithValue("@DateOfBirth", pAccount.DateOfBirth);
+                        SqlParameter outputMessage = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
+                        outputMessage.Direction = ParameterDirection.Output;
+                        SqlParameter signupId = new SqlParameter("@AccountId", SqlDbType.NVarChar, 20);
+                        signupId.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(outputMessage);
+                        cmd.Parameters.Add(signupId);
+                        cmd.ExecuteNonQuery();
+                        Message = cmd.Parameters["@Message"].Value.ToString();
+                    }
+                    return Ok(new { msg = Message });
                 }
 
             }

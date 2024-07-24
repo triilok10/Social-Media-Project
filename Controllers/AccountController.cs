@@ -114,7 +114,11 @@ namespace Social_Media_Project.Controllers
                         if (res.IsSuccessStatusCode)
                         {
                             string resBody = await res.Content.ReadAsStringAsync();
-                            string resData = JsonConvert.DeserializeObject<string>(resBody);
+                            dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                            Message = resData.msg;
+                            TempData["successMessage"] = Message;
+                            TempData.Keep("successMessage");
+                            return View();
                         }
                     }
                     return View();
