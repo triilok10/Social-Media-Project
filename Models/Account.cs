@@ -20,7 +20,7 @@
         //ProfilePhoto
         public IFormFile? ProfilePhoto { get; set; }
         //ProfilePhotoPath
-        public string? ProfilePhotoPath { get; set}
+        public string? ProfilePhotoPath { get; set; }
         //Bio
         public string? Bio { get; set; }
         //Hidden Id

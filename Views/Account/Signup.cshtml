@@ -69,7 +69,7 @@
                 </div>
             </form>
             <div class="signUp-LoginBio d-none" id="SignUpBioForm">
-                <form asp-controller="Account" asp-action="Signup" method="post" id="bioForm">
+                <form asp-controller="Account" asp-action="Signup" method="post" id="bioForm" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Id" />
                     <div class="LoginBio-Data">
                         <label asp-for="ProfilePhoto" class="LoginBio-DataSave">Add Profile Photo</label>

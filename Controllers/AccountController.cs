@@ -80,22 +80,42 @@ namespace Social_Media_Project.Controllers
                     }
                     return View();
                 }
-                else if (string.IsNullOrWhiteSpace(pAccount.Id.ToString()))
+                else if (!string.IsNullOrWhiteSpace(pAccount.Id.ToString()))
                 {
-                    if (pAccount.ProfilePhoto != null && ProfilePhoto.Length > 0)
+                    if (ProfilePhoto != null && ProfilePhoto.Length > 0)
                     {
                         string FileName = Path.GetFileName(ProfilePhoto.FileName);
-                        string FileData = Path.Combine("wwwroot", "images", "UserData", FileName);
-                        using (var Stream = new FileStream(FileData, FileMode.Create))
+                        string FileData = Path.Combine("wwwroot", "images", "UserData");
+                        if (!Directory.Exists(FileData))
+                        {
+                            Directory.CreateDirectory(FileData);
+                        }
+                        string FilePath = Path.Combine(FileData, FileName);
+                        using (var Stream = new FileStream(FilePath, FileMode.Create))
                         {
                             await ProfilePhoto.CopyToAsync(Stream);
                         }
+
                         pAccount.ProfilePhotoPath = "/images/UserData/" + FileName;
 
                         string url = baseUrl + "api/AccountAPI/Signup";
-                        string jsonBody = JsonConvert.SerializeObject(pAccount);
+
+                        var pAccountData = new
+                        {
+                            pAccount.ProfilePhotoPath,
+                            pAccount.Id,
+                            pAccount.Bio,
+                            pAccount.DateOfBirth
+                        };
+
+                        string jsonBody = JsonConvert.SerializeObject(pAccountData);
                         StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
                         HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            string resData = JsonConvert.DeserializeObject<string>(resBody);
+                        }
                     }
                     return View();
                 }
