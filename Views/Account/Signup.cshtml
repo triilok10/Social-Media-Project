@@ -13,7 +13,7 @@
 {
     <script>
         toastr.success("@TempData["successMessage"]");
-        
+
         $(document).ready(function () {
             $("#SignUpForm").addClass('d-none');
             $("#SignUpBioForm").removeClass('d-none');
@@ -74,7 +74,7 @@
                     <div class="LoginBio-Data">
                         <label asp-for="ProfilePhoto" class="LoginBio-DataSave">Add Profile Photo</label>
                         <div id="ProfilePhotoPreview" class="mt-2" style="display:flex; justify-content:center;">
-                            <img id="previewImage" src="#" alt="Preview" style="max-width: 200px; max-height: 200px; display: none; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
+                            <img id="previewImage" src="#" alt="Preview" style="width: 200px; height: 200px !important; display: none; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
                         </div>
                         <div class="LoginBio-DataSaveDate">
                             <div>

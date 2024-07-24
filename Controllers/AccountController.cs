@@ -118,7 +118,7 @@ namespace Social_Media_Project.Controllers
                             Message = resData.msg;
                             TempData["successMessage"] = Message;
                             TempData.Keep("successMessage");
-                            return View();
+                            return RedirectToAction("UserAccountPage");
                         }
                     }
                     return View();
@@ -142,5 +142,13 @@ namespace Social_Media_Project.Controllers
             return View();
         }
 
+
+        #region ""
+        public IActionResult UserAccountPage()
+        {
+
+            return View();
+        }
+        #endregion
     }
 }
