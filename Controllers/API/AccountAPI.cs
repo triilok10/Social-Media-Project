@@ -89,8 +89,9 @@ namespace Social_Media_Project.Controllers.API
                         cmd.Parameters.Add(signupId);
                         cmd.ExecuteNonQuery();
                         Message = cmd.Parameters["@Message"].Value.ToString();
+                        AccountId = cmd.Parameters["@AccountId"].Value.ToString();
                     }
-                    return Ok(new { msg = Message });
+                    return Ok(new { msg = Message, id = AccountId });
                 }
 
             }
@@ -106,6 +107,39 @@ namespace Social_Media_Project.Controllers.API
             }
         }
 
+        #endregion
+
+        #region "Get User Home Details"
+        [HttpGet]
+        public IActionResult GetUserHomeDetails(int Id)
+        {
+            try
+            {
+                Account objAccount = new Account();
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
+                    con.Open();
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", Id);
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            objAccount.Fullname = Convert.ToString(rdr["FullName"]);
+                            objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
+                            objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
+                        }
+                    }
+                }
+                return Ok(objAccount);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+
+        }
         #endregion
 
     }

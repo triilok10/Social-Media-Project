@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Social_Media_Project.Models;
+using System.Drawing;
 using System.Text;
 
 namespace Social_Media_Project.Controllers
@@ -116,9 +117,10 @@ namespace Social_Media_Project.Controllers
                             string resBody = await res.Content.ReadAsStringAsync();
                             dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
                             Message = resData.msg;
+                            pAccount.Id = Convert.ToInt32(resData.id);
                             TempData["successMessage"] = Message;
                             TempData.Keep("successMessage");
-                            return RedirectToAction("UserAccountPage");
+                            return RedirectToAction("UserAccountPage", pAccount);
                         }
                     }
                     return View();
@@ -143,11 +145,32 @@ namespace Social_Media_Project.Controllers
         }
 
 
-        #region ""
-        public IActionResult UserAccountPage()
+        #region "User Account Page"
+        public async Task<IActionResult> UserAccountPage(Account pAccount)
         {
-
-            return View();
+            string Message = "";
+            int Id = pAccount.Id;
+            try
+            {
+                string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
+                string fullUrl = $"{url}?Id={Id}";
+                HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
+                if (res.IsSuccessStatusCode)
+                {
+                    string resBody = await res.Content.ReadAsStringAsync();
+                    Account resData = JsonConvert.DeserializeObject<Account>(resBody);
+                    return View(resData);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return View(Message);
+            }
         }
         #endregion
     }

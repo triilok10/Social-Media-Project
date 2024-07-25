@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Social_Media_Project.Models
+@model Account
+
+@{
     ViewData["Title"] = "UserAccountPage";
 }
 @if (TempData["errorMessage"] != null)
@@ -59,6 +62,7 @@
         border: 1px solid black;
         padding: 30px;
         height: auto;
+        width:600px;
     }
 
     .bioEdit {
@@ -66,6 +70,7 @@
         justify-content: space-evenly;
         align-items: center;
         text-align: center;
+        width:600px;
     }
 
     .childBioEdit {
@@ -84,23 +89,27 @@
         justify-content: space-evenly;
         align-items: center;
     }
+
+    .ProfileSectionAlign {
+        text-align: center;
+    }
 </style>
 
 <div class="fix-AlignHomePage">
     <div>
         <div class="UserAccountPage-Data">
             <div class="profilePicStyle">
-                <div class="profilePic-Align"><img src="" alt="profile photo" class="userAccountPage-ProfileImg" /></div>
-                <div>Trilok Chand Swami</div>
+                <div class="profilePic-Align"><img src="@Model.ProfilePhotoPath" alt="profile photo" class="userAccountPage-ProfileImg" /></div>
+                <div>@Model.Fullname</div>
             </div>
             <div class="UserAccountPage-ProfileSection">
-                <div>posts</div>
-                <div>followers</div>
-                <div>following</div>
+                <div class="ProfileSectionAlign"><div>6</div><div>posts</div></div>
+                <div class="ProfileSectionAlign"><div>5</div><div>followers</div></div>
+                <div class="ProfileSectionAlign"><div>5</div><div>following</div></div>
             </div>
         </div>
         <div class="UserAccountPage-BioSection">
-            <p>This is the Bio Section</p>
+            <p>@Model.Bio</p>
         </div>
         <div class="UserAccountPage-BioSection bioEdit">
             <div>
