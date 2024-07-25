@@ -1,4 +1,6 @@
-﻿namespace Social_Media_Project.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Social_Media_Project.Models
 {
     public class Account
     {   //Id
@@ -8,6 +10,7 @@
         //Password
         public string? Password { get; set; }
         //Email
+        [EmailAddress]
         public string? Email { get; set; }
         //Phone
         public string? Phone { get; set; }
