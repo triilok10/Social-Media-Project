@@ -28,5 +28,6 @@ namespace Social_Media_Project.Models
         public string? Bio { get; set; }
         //Hidden Id
         public int? hdnId { get; set; }
+        public bool? agreeTerms { get; set; }
     }
 }
