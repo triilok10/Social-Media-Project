@@ -152,19 +152,20 @@ namespace Social_Media_Project.Controllers
             int Id = pAccount.Id;
             try
             {
-                string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
-                string fullUrl = $"{url}?Id={Id}";
-                HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
-                if (res.IsSuccessStatusCode)
-                {
-                    string resBody = await res.Content.ReadAsStringAsync();
-                    Account resData = JsonConvert.DeserializeObject<Account>(resBody);
-                    return View(resData);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                //string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
+                //string fullUrl = $"{url}?Id={Id}";
+                //HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
+                //if (res.IsSuccessStatusCode)
+                //{
+                //    string resBody = await res.Content.ReadAsStringAsync();
+                //    List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
+                //    return View(lstData);
+                //}
+                //else
+                //{
+                //    return BadRequest();
+                //}
+                return View();
             }
             catch (Exception ex)
             {

@@ -115,7 +115,7 @@ namespace Social_Media_Project.Controllers.API
         {
             try
             {
-                Account objAccount = new Account();
+                MediaPost objAccount = new MediaPost();
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
@@ -129,6 +129,7 @@ namespace Social_Media_Project.Controllers.API
                             objAccount.Fullname = Convert.ToString(rdr["FullName"]);
                             objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
                             objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
+                            objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
                         }
                     }
                 }
