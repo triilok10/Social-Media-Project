@@ -1,8 +1,11 @@
 ﻿@model Social_Media_Project.Models.Account
+
 @{
     ViewData["Title"] = "Signup";
 }
+
 <link href="~/js/toastr.min.css" rel="stylesheet" />
+
 @if (TempData["errorMessage"] != null)
 {
     <script>
@@ -22,85 +25,82 @@
     </script>
 }
 
-
-
-<div class="Center-Mobile">
-    <div class="d-inline-flex justify-content-between align-items-center">
-        <div>
-            <form asp-controller="Account" asp-action="Signup" method="post" id="SignUpForm">
-                <div class="right-MobileSave">
-                    <div class="right-Instagram">
-                        Instagram
+<div class="Signup-MarginAlign ">
+    <div class="Center-Mobile">
+        <div class="signup-container">
+            <div class="signup-form">
+                <h2 class="signup-form-title">Sign Up</h2>
+                <form asp-controller="Account" asp-action="Signup" method="post" id="SignUpForm">
+                    <div class="signup-form-group">
+                        <label for="Phone">Mobile Number</label>
+                        <input asp-for="Phone" id="Phone" class="form-control" placeholder="Mobile Number" required>
                     </div>
-                    <div>
-                        <div class="right-userInfo">
-                            <div class="userInfo-Username">
-                                <input type="hidden" asp-for="hdnId" value="1" />
-                                <input asp-for="Phone" id="Phone" placeholder="Mobile Number" class="input-UserInfo" />
-                            </div>
-                            <div class="userInfo-Password">
-                                <input asp-for="Email" id="Email" placeholder="Email Address" class="input-UserInfo" />
-                            </div>
-                            <div class="userInfo-Password">
-                                <input asp-for="Fullname" id="Fullname" placeholder="Full Name" class="input-UserInfo" />
-                            </div>
-                            <div class="userInfo-Password">
-                                <input asp-for="Username" id="Username" placeholder="Username" class="input-UserInfo" />
-                            </div>
-                            <div class="userInfo-Password">
-                                <input asp-for="Password" id="Password" placeholder="Password" class="input-UserInfo" type="password" />
-                            </div>
-                            <div class="userInfo-Password">
-                                <input asp-for="ConfirmPassword" id="ConfirmPassword" placeholder="Confirm Password" class="input-UserInfo" type="password" />
-                            </div>
-                        </div>
-                        <div>
-                            <button type="submit" class="input-validate">
-                                Sign up
-                            </button>
-                        </div>
-                        <div>
-                            <p class="text-center">Log in with Facebook</p>
-                        </div>
+                    <div class="signup-form-group">
+                        <label for="Email">Email Address</label>
+                        <input asp-for="Email" id="Email" class="form-control" placeholder="Email Address" required>
                     </div>
+                    <div class="signup-form-group">
+                        <label for="Fullname">Full Name</label>
+                        <input asp-for="Fullname" id="Fullname" class="form-control" placeholder="Full Name" required>
+                    </div>
+                    <div class="signup-form-group">
+                        <label for="Username">Username</label>
+                        <input asp-for="Username" id="Username" class="form-control" placeholder="Username" required>
+                    </div>
+                    <div class="signup-form-group">
+                        <label for="Password">Password</label>
+                        <input asp-for="Password" id="Password" class="form-control" type="password" placeholder="Password" required>
+                    </div>
+                    <div class="signup-form-group">
+                        <label for="ConfirmPassword">Confirm Password</label>
+                        <input asp-for="ConfirmPassword" id="ConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" required>
+                    </div>
+                    <div class="form-group-checkbox">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <label for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                    </div>
+                    <div class="signup-form-group">
+                        <button type="submit">Sign Up</button>
+                    </div>
+                    <div class="signup-form-social">
+                        <p>Or sign up with</p>
+                        <a href="#" class="btn btn-facebook">Facebook</a>
+                    </div>
+                </form>
+                <div class="login-form-link">
+                    <p>Already have an account? <a href="@Url.Action("Index","Home")">Log in</a></p>
                 </div>
-                <div class="text-center right-MobileSave Signup-Instagram-Bottom">
-                    Have an account?<a href="@Url.Action("Index","Home")">Log in</a>
-                </div>
-            </form>
+            </div>
             <div class="signUp-LoginBio d-none" id="SignUpBioForm">
                 <form asp-controller="Account" asp-action="Signup" method="post" id="bioForm" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Id" />
-                    <div class="LoginBio-Data">
-                        <label asp-for="ProfilePhoto" class="LoginBio-DataSave">Add Profile Photo</label>
-                        <div id="ProfilePhotoPreview" class="mt-2" style="display:flex; justify-content:center;">
-                            <img id="previewImage" src="#" alt="Preview" style="width: 200px; height: 200px !important; display: none; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
+                    <div class="signup-form">
+                        <h2 class="signup-form-title">Complete Your Profile</h2>
+                        <div class="signup-form-group">
+                            <label for="ProfilePhoto">Add Profile Photo</label>
+                            <input type="file" asp-for="ProfilePhoto" id="ProfilePhotoInput" class="form-control" onchange="previewProfilePhoto(event)">
+                            <img id="previewImage" class="preview-image" src="#" alt="Preview">
                         </div>
-                        <div class="LoginBio-DataSaveDate">
-                            <div>
-                                <input type="file" id="ProfilePhotoInput" asp-for="ProfilePhoto" onchange="previewProfilePhoto(event)" />
-                            </div>
+                        <div class="signup-form-group">
+                            <label for="DateOfBirth">Date Of Birth</label>
+                            <input type="date" asp-for="DateOfBirth" id="DateOfBirth" class="form-control">
                         </div>
-                    </div>
-                    <div class="LoginBio-Data">
-                        <label asp-for="DateOfBirth" class="LoginBio-DataSave">Date Of Birth</label>
-                        <input type="date" asp-for="DateOfBirth" class="LoginBio-DataSaveInput" />
-                    </div>
-                    <div class="LoginBio-Data">
-                        <label asp-for="Bio" class="LoginBio-DataSave">Bio:</label>
-                        <textarea type="text" asp-for="Bio" placeholder="Describe yourself" class="LoginBio-DataSaveInput"></textarea>
-                    </div>
-                    <div>
-                        <button type="submit" class="LoginBio-DataSaveInput btnSave">Save</button>
+                        <div class="signup-form-group">
+                            <label for="Bio">Bio</label>
+                            <textarea asp-for="Bio" id="Bio" rows="4" class="form-control" placeholder="Describe yourself"></textarea>
+                        </div>
+                        <div class="signup-form-group">
+                            <button type="submit">Save</button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
-
-
     </div>
-
 </div>
+
+
+
 <script type="text/javascript">
     $(document).ready(function () {
         //toastr options

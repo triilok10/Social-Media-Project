@@ -1,0 +1,63 @@
+﻿@model Social_Media_Project.Models.MediaPost
+
+@{
+    ViewData["Title"] = "AddPost";
+}
+
+@if (TempData["errorMessage"] != null)
+{
+    <script>
+        toastr.error("@TempData["errorMessage"]");
+    </script>
+}
+@if (TempData["successMessage"] != null)
+{
+    <script>
+        toastr.success("@TempData["successMessage"]");
+    </script>
+}
+
+
+<div class="fix-AlignHomePage">
+    <div class="add-post-container">
+        <h2>Add New Post</h2>
+        <form class="add-post-form" method="post" enctype="multipart/form-data" action="/Post/Create">
+            <div id="ProfilePhotoPreview" class="mt-2" style="display:flex; justify-content:center;">
+                <img id="previewImage" src="#" alt="Preview" style="width: 200px; height: 200px !important; display: none; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
+            </div>
+            <div class="form-group">
+                <label for="postImage">Choose an Image:</label>
+                <input type="file" class="form-control-file" id="postImage" name="PostImage" onchange="previewProfilePhoto(event)">
+            </div>
+            <div class="form-group">
+                <label for="caption">Caption:</label>
+                <textarea class="form-control" id="caption" name="Caption" rows="3"></textarea>
+            </div>
+            <button type="submit">Upload Post</button>
+        </form>
+    </div>
+    <div class="bottom-buttons">
+        <a class="feed" href="@Url.Action("Feed","Account")">Following Feed</a>
+        <a class="search" href="@Url.Action("SearchProfile","Account")">Search Profile</a>
+        <a class="add-post" href="@Url.Action("AddPost","Account")">Add Post</a>
+        <a class="home" href="@Url.Action("UserAccountPage","Account")">Home</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function previewProfilePhoto(event) {
+        var input = event.target;
+        var preview = document.getElementById('previewImage');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

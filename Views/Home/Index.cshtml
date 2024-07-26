@@ -3,47 +3,38 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="Center-Mobile">
+<div class="Center-Mobile IndexSignUp">
     <div class="d-inline-flex justify-content-between align-items-center">
         <div class="left-Mobile">
             <img src="../../images/mobile.jpg" class="left-Mobile-img" />
         </div>
-        <div>
-            <div class="right-Mobile">
-                <div class="right-Instagram">
-                    Instagram
+        <div class="right-Mobile">
+            <div class="right-Instagram">
+                Instagram
+            </div>
+            <form asp-controller="Account" asp-action="Login" method="post">
+                <div class="right-userInfo">
+                    <div class="userInfo-Username">
+                        <input asp-for="Username" id="Username" class="input-UserInfo" placeholder="Phone number, username or email address" required>
+                    </div>
+                    <div class="userInfo-Password">
+                        <input asp-for="Password" id="Password" class="input-UserInfo" type="password" placeholder="Password" required>
+                    </div>
                 </div>
-                <div>
-                    <form action="/" method="post">
-                        <div class="right-userInfo">
-                            <div class="userInfo-Username">
-                                <input asp-for="Username" placeholder="Phone number, username or email address" class="input-UserInfo" />
-                            </div>
-                            <div class="userInfo-Password">
-                                <input asp-for="Password" placeholder="Password" class="input-UserInfo" />
-                            </div>
-                        </div>
-                    </form>
-                    <div>
-                        <button type="submit" class="input-validate">
-                            Log in
-                        </button>
-                    </div>
-                    <div>
-                        <p class="text-center">Log in with Facebook</p>
-                    </div>
-                    <div class="text-center">
+                <div class="submit-SignUpButton">
+                    <button type="submit" class="input-validate">
+                        Log in
+                    </button>
+                </div>
+                <div class="right-Mobile login-form-link fixAlign">
+                    <div class="text-center forgot-password">
                         <a href="@Url.Action("ForgottenPassword","Account")">Forgotten your password?</a>
                     </div>
+                    <div class="signup-link">
+                        Don't have an account? <a href="@Url.Action("Signup","Account")">Sign up</a>
+                    </div>
                 </div>
-            </div>
-            <div class="text-center right-Mobile right-Instagram-Bottom">
-                Don't have an account? <a href="@Url.Action("Signup","Account")">Sign up</a>
-            </div>
+            </form>
         </div>
-
     </div>
-
 </div>
-
-

@@ -1,4 +1,102 @@
-﻿.Center-Mobile {
+﻿.ForgetPassword-align {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    max-width: 350px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+    font-size: 31px;
+    font-weight: 400;
+    font-family: cursive;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.form-group {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.form-control {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+
+.btn-submit {
+    background-color: #44bcf0;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+    .btn-submit:hover {
+        background-color: #1f9cd6;
+    }
+
+.form-link {
+    margin-top: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+
+    .form-link a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .form-link a:hover {
+            text-decoration: underline;
+        }
+
+.signup-link {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+    .signup-link a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+.IndexSignUp {
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,119 +108,588 @@
 
 .left-Mobile-img {
     height: 60vh;
+    max-width: 100%;
+    object-fit: cover;
 }
 
 .right-Mobile {
-    border: 1px solid gray;
-    margin-left: 10px;
-    width: 350px;
-    margin-top: 75px;
-}
-
-.right-MobileSave {
-    border: 1px solid gray;
-    width: 350px;
-    margin-top: 75px;
-}
-
-.Signup-Instagram-Bottom {
+    max-width: 350px;
+    width: 100%;
     padding: 20px;
-    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.right-Instagram {
-    font-size: 31px;
+    .right-Mobile .right-Instagram {
+        font-size: 31px;
+        font-weight: 400;
+        font-family: cursive;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .right-Mobile .right-userInfo {
+        text-align: center;
+    }
+
+    .right-Mobile .input-UserInfo {
+        margin: 10px 0;
+        padding: 10px;
+        width: 100%;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: border-color 0.3s ease;
+    }
+
+        .right-Mobile .input-UserInfo:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+    .right-Mobile .input-validate {
+        background-color: #44bcf0;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+
+        .right-Mobile .input-validate:hover {
+            background-color: #1f9cd6;
+        }
+
+    .right-Mobile .login-form-link {
+        margin-top: 15px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+        .right-Mobile .login-form-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .right-Mobile .login-form-link a:hover {
+                text-decoration: underline;
+            }
+
+    .right-Mobile .forgot-password {
+        margin-top: 10px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+        .right-Mobile .forgot-password a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .right-Mobile .forgot-password a:hover {
+                text-decoration: underline;
+            }
+
+    .right-Mobile .signup-link {
+        display: block;
+        margin-top: 20px;
+        text-align: center;
+        font-size: 16px;
+    }
+
+        .right-Mobile .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .right-Mobile .signup-link a:hover {
+                text-decoration: underline;
+            }
+
+.submit-SignUpButton {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.fixAlign {
+    margin: 0px;
+}
+
+..Center-Mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.signup-form {
+    max-width: 350px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.Signup-MarginAlign {
+    margin: 25px 0px;
+}
+
+.signup-form-title {
+    font-size: 24px;
     font-weight: 400;
     font-family: cursive;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 50px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
 }
 
-.right-userInfo {
+.signup-form-group label {
+    font-weight: bold;
+    display: block;
+    margin: 5px 0px;
+}
+
+.signup-form-group input[type="text"],
+.signup-form-group input[type="email"],
+.signup-form-group input[type="password"],
+.signup-form-group input[type="file"],
+.signup-form-group textarea {
     width: 100%;
-    text-align: center;
-    display: inline-block;
-}
-
-.input-UserInfo {
-    margin: 5px;
-    width: 280px;
-    font-size: 12px;
     padding: 10px;
-    background-color: #f7f7f7a1;
-}
-
-.input-validate {
-    background-color: #44bcf0;
-    text-align: center;
-    padding: 8px;
-    font-size: 16px;
-    font-family: cursive;
-    color: white;
+    font-size: 14px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    margin: 18px 33px;
-    width: 280px;
+    transition: border-color 0.3s ease;
 }
 
-.right-Instagram-Bottom {
-    padding: 20px;
+    .signup-form-group input[type="text"]:focus,
+    .signup-form-group input[type="email"]:focus,
+    .signup-form-group input[type="password"]:focus,
+    .signup-form-group input[type="file"]:focus,
+    .signup-form-group textarea:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+
+.signup-form-group button[type="submit"],
+.signup-form-group button[type="button"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+    .signup-form-group button[type="submit"]:hover,
+    .signup-form-group button[type="button"]:hover {
+        background-color: #0056b3;
+    }
+
+.signup-form-social {
+    text-align: center;
     margin-top: 20px;
 }
 
+    .signup-form-social p {
+        margin: 10px 0;
+    }
+
+    .signup-form-social a {
+        display: inline-block;
+        background-color: #3b5998;
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+        .signup-form-social a:last-child {
+            margin-right: 0;
+        }
+
+.signup-form-bottom {
+    text-align: center;
+    margin-top: 20px;
+}
+
+    .signup-form-bottom a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .signup-form-bottom a:hover {
+            text-decoration: underline;
+        }
+
 .signUp-LoginBio {
-    border: 1px solid gray;
-    width: 600px;
-    height: auto;
-    margin: 10px 0px;
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
     padding: 20px;
-}
-
-
-.LoginBio-DataSave {
-    text-align: center;
-    display: block;
-    padding: 10px;
-}
-
-.LoginBio-DataSaveInput {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    align-items: center;
-    padding: 10px;
-    background-color: #f8f8f8;
-    border: 1px solid grey;
-}
-
-.LoginBio-Date {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-}
-
-.LoginBio-DataSaveDate {
-    display: inline-flex;
-    width: 100%;
-    justify-content: center;
-    padding: 10px;
-    border: 1px solid grey;
-    background-color: #f8f8f8
-}
-
-.btnSave {
-    margin-top: 10px;
-    background-color: #1b92ce;
-    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    color: white;
 }
+
+    .signUp-LoginBio label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .signUp-LoginBio input[type="file"],
+    .signUp-LoginBio input[type="date"],
+    .signUp-LoginBio textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .signUp-LoginBio button[type="submit"] {
+        background-color: #1b92ce;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+
+        .signUp-LoginBio button[type="submit"]:hover {
+            background-color: #0f6cb2;
+        }
+
+    .signUp-LoginBio .preview-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        display: none;
+    }
+
+.login-form-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+    .login-form-link a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .login-form-link a:hover {
+            text-decoration: underline;
+        }
+
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .form-group-checkbox input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    .form-group-checkbox label {
+        margin-bottom: 0;
+    }
 
 label.error {
     color: red;
 }
 
+.fix-AlignHomePage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
 
+.add-post-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.add-post-form {
+    display: flex;
+    flex-direction: column;
+}
+
+    .add-post-form label {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .add-post-form input[type="file"],
+    .add-post-form textarea {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .add-post-form button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .add-post-form button:hover {
+            background-color: #0056b3;
+        }
+
+.bottom-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+    .bottom-buttons a {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+        background-color: #007bff;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+        .bottom-buttons a:hover {
+            background-color: #0056b3;
+        }
+
+        .bottom-buttons a.feed {
+            background-color: #dc3545;
+        }
+
+        .bottom-buttons a.search {
+            background-color: #17a2b8;
+        }
+
+        .bottom-buttons a.add-post {
+            background-color: #ffc107;
+        }
+
+        .bottom-buttons a.home {
+            background-color: #28a745;
+        }
+
+.UserAccountPage-ProfileSection {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}
+
+.UserAccountPage-Data {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    padding: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.userAccountPage-ProfileImg {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #333;
+    padding: 2px;
+    border-radius: 50%;
+}
+
+.profilePicStyle {
+    padding: 10px;
+    width: 50%;
+    text-align: center;
+}
+
+.profilePic-Align {
+    display: flex;
+    justify-content: center;
+}
+
+.fix-AlignHomePage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.UserAccountPage-BioSection {
+    border: 1px solid #ddd;
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #f9f9f9;
+}
+
+.bioEdit {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.childBioEdit {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #007bff;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .childBioEdit:hover {
+        background-color: #0056b3;
+    }
+
+.homepage-PhotoSection {
+    border: 1px solid #ddd;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.PhotoSection-Child {
+    flex: 1 1 calc(33.333% - 20px);
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    overflow: hidden;
+    position: relative;
+}
+
+.PhotoSectionImg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.PhotoSection-Child:hover .PhotoSectionImg {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.ProfileStat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+    .ProfileStat > div {
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+        .ProfileStat > div:first-child {
+            color: #333;
+        }
+
+        .ProfileStat > div:last-child {
+            color: #777;
+            font-size: 0.9em;
+        }
+
+.bottom-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+    .bottom-buttons a {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+        background-color: #007bff;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+        .bottom-buttons a:hover {
+            background-color: #0056b3;
+        }
+
+        .bottom-buttons a.home {
+            background-color: #28a745;
+        }
+
+        .bottom-buttons a.add-post {
+            background-color: #ffc107;
+        }
+
+        .bottom-buttons a.search {
+            background-color: #17a2b8;
+        }
+
+        .bottom-buttons a.feed {
+            background-color: #dc3545;
+        }

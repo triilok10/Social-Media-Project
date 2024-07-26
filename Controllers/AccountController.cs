@@ -174,5 +174,13 @@ namespace Social_Media_Project.Controllers
             }
         }
         #endregion
+
+        #region "Add Post"
+        [HttpGet, HttpPost]
+        public IActionResult AddPost()
+        {
+            return View();
+        }
+        #endregion
     }
 }

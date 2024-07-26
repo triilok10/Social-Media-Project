@@ -1,5 +1,5 @@
 ﻿@model List<Social_Media_Project.Models.MediaPost>
-
+<link href="~/css/stylesheet.css" rel="stylesheet" />
 @{
     ViewData["Title"] = "UserAccountPage";
 }
@@ -17,175 +17,6 @@
     </script>
 }
 
-<style>
-    .UserAccountPage-ProfileSection {
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        width: 100%;
-    }
-
-    .UserAccountPage-Data {
-        display: flex;
-        justify-content: space-between;
-        border: 1px solid #ddd;
-        padding: 15px;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .userAccountPage-ProfileImg {
-        width: 100px;
-        height: 100px;
-        border: 2px solid #333;
-        padding: 2px;
-        border-radius: 50%;
-    }
-
-    .profilePicStyle {
-        padding: 10px;
-        width: 50%;
-        text-align: center;
-    }
-
-    .profilePic-Align {
-        display: flex;
-        justify-content: center;
-    }
-
-    .fix-AlignHomePage {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-    }
-
-    .UserAccountPage-BioSection {
-        border: 1px solid #ddd;
-        padding: 30px;
-        width: 100%;
-        max-width: 800px;
-        margin: 20px auto;
-        background-color: #f9f9f9;
-    }
-
-    .bioEdit {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        text-align: center;
-        width: 100%;
-        max-width: 800px;
-        margin: 20px auto;
-    }
-
-    .childBioEdit {
-        border: 1px solid #ddd;
-        padding: 10px;
-        background-color: #007bff;
-        border-radius: 5px;
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-        .childBioEdit:hover {
-            background-color: #0056b3;
-        }
-
-    .homepage-PhotoSection {
-        border: 1px solid #ddd;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        justify-content: center;
-        width: 100%;
-        max-width: 800px;
-        margin: 20px auto;
-    }
-
-    .PhotoSection-Child {
-        flex: 1 1 calc(33.333% - 20px);
-        box-sizing: border-box;
-        border: 1px solid #ddd;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .PhotoSectionImg {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-    .PhotoSection-Child:hover .PhotoSectionImg {
-        transform: scale(1.05);
-        transition: transform 0.3s ease;
-    }
-
-    .ProfileStat {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-        .ProfileStat > div {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-            .ProfileStat > div:first-child {
-                color: #333;
-            }
-
-            .ProfileStat > div:last-child {
-                color: #777;
-                font-size: 0.9em;
-            }
-
-    .bottom-buttons {
-        display: flex;
-        justify-content: space-around;
-        width: 100%;
-        max-width: 800px;
-        margin: 20px auto;
-    }
-
-        .bottom-buttons a {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            background-color: #007bff;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-        }
-
-            .bottom-buttons a:hover {
-                background-color: #0056b3;
-            }
-
-            .bottom-buttons a.home {
-                background-color: #28a745;
-            }
-
-            .bottom-buttons a.add-post {
-                background-color: #ffc107;
-            }
-
-            .bottom-buttons a.search {
-                background-color: #17a2b8;
-            }
-
-            .bottom-buttons a.feed {
-                background-color: #dc3545;
-            }
-</style>
 
 <div class="fix-AlignHomePage">
     <div>
@@ -240,7 +71,7 @@
         <div class="bottom-buttons">
             <a class="feed" href="@Url.Action("Feed","Account")">Following Feed</a>
             <a class="search" href="@Url.Action("SearchProfile","Account")">Search Profile</a>
-            <a class="add-post" href="@Url.Action("CreatePost","Account")">Add Post</a>
+            <a class="add-post" href="@Url.Action("AddPost","Account")">Add Post</a>
             <a class="home" href="@Url.Action("UserAccountPage","Account")">Home</a>
         </div>
     </div>
