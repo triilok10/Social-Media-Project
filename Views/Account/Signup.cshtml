@@ -16,14 +16,10 @@
 {
     <script>
         toastr.success("@TempData["successMessage"]");
-
         $(document).ready(function () {
-            $("#SignUpForm").addClass('d-none');
-            $("#SignUpBioForm").removeClass('d-none');
-            $("#login-form-link").addClass('d-none');
-            $("#signup-form").addClass('d-none');
+            $(".signup-form").addClass('d-none');
+            $(".signUp-LoginBio").removeClass('d-none');
         });
-
     </script>
 }
 
@@ -73,12 +69,14 @@
             <div class="signUp-LoginBio d-none" id="SignUpBioForm">
                 <form asp-controller="Account" asp-action="Signup" method="post" id="bioForm" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Id" />
-                    <div class="signup-form">
+                    <div class="signup-form-LoginBio">
                         <h2 class="signup-form-title">Complete Your Profile</h2>
                         <div class="signup-form-group">
                             <label for="ProfilePhoto">Add Profile Photo</label>
                             <input type="file" asp-for="ProfilePhoto" id="ProfilePhotoInput" name="ProfilePhoto" class="form-control" onchange="previewProfilePhoto(event)">
+                            <div class="previewImageAlign">
                             <img id="previewImage" class="preview-image" src="#" alt="Preview">
+                            </div>
                         </div>
                         <div class="signup-form-group">
                             <label for="DateOfBirth">Date Of Birth</label>
@@ -101,6 +99,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         // Toastr options
+
         toastr.options = {
             "closeButton": false,
             "debug": false,

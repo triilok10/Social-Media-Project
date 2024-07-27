@@ -250,6 +250,21 @@
     background-color: #f9f9f9;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+.previewImageAlign {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-form-LoginBio {
+    max-width: 350px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 
 .Signup-MarginAlign {
     margin: 25px 0px;
@@ -352,8 +367,10 @@
     margin: 20px auto;
     padding: 20px;
     background-color: #fff;
-    border: 1px solid #ddd;
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
     .signUp-LoginBio label {

@@ -117,10 +117,14 @@ namespace Social_Media_Project.Controllers
                             string resBody = await res.Content.ReadAsStringAsync();
                             dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
                             Message = resData.msg;
+                            var userId = new
+                            {
+                                pAccount.Id
+                            };
                             pAccount.Id = Convert.ToInt32(resData.id);
                             TempData["successMessage"] = Message;
                             TempData.Keep("successMessage");
-                            return RedirectToAction("UserAccountPage", pAccount);
+                            return RedirectToAction("UserAccountPage", userId);
                         }
                     }
                     return View();
@@ -163,14 +167,13 @@ namespace Social_Media_Project.Controllers
                 //}
                 //else
                 //{
-                //    return BadRequest();
+                //    return BadRequest("Error fetching data from the API.");
                 //}
                 return View();
             }
             catch (Exception ex)
             {
-                Message = ex.Message;
-                return View(Message);
+                return View("Error", new { Message = ex.Message });
             }
         }
         #endregion
