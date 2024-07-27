@@ -21,17 +21,18 @@
 <div class="fix-AlignHomePage">
     <div class="add-post-container">
         <h2>Add New Post</h2>
-        <form class="add-post-form" method="post" enctype="multipart/form-data" action="/Post/Create">
+        <form class="add-post-form" method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="AddPost">
+            <input type="hidden" asp-for="hdnId" value="1" />
             <div id="ProfilePhotoPreview" class="mt-2" style="display:flex; justify-content:center;">
                 <img id="previewImage" src="#" alt="Preview" style="width: 200px; height: 200px !important; display: none; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
             </div>
             <div class="form-group">
                 <label for="postImage">Choose an Image:</label>
-                <input type="file" class="form-control-file" id="postImage" name="PostImage" onchange="previewProfilePhoto(event)">
+                <input asp-for="AddPostPhoto" type="file" class="form-control-file" id="postImage" name="PostImage" onchange="previewProfilePhoto(event)">
             </div>
             <div class="form-group">
                 <label for="caption">Caption:</label>
-                <textarea class="form-control" id="caption" name="Caption" rows="3"></textarea>
+                <textarea asp-for="PostCaption" class="form-control" id="caption" name="Caption" rows="3"></textarea>
             </div>
             <button type="submit">Upload Post</button>
         </form>

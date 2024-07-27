@@ -2,6 +2,18 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+@if (TempData["errorMessage"] != null)
+{
+    <script>
+        toastr.error("@TempData["errorMessage"]");
+    </script>
+}
+@if (TempData["successMessage"] != null)
+{
+    <script>
+        toastr.success("@TempData["successMessage"]");
+    </script>
+}
 
 <div class="Center-Mobile IndexSignUp">
     <div class="d-inline-flex justify-content-between align-items-center">
@@ -12,7 +24,7 @@
             <div class="right-Instagram">
                 Instagram
             </div>
-            <form asp-controller="Account" asp-action="Login" method="post">
+            <form asp-controller="Account" asp-action="Login" method="post" id="loginForm">
                 <div class="right-userInfo">
                     <div class="userInfo-Username">
                         <input asp-for="Username" id="Username" class="input-UserInfo" placeholder="Phone number, username or email address" required>
@@ -38,3 +50,19 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#loginForm").validate({
+            rules: {
+                Username: { required: true },
+                Password: { required: true }
+            },
+            messages: {
+                Username: { required: "Please enter the Username" },
+                Password: { required: "Please enter the Password" }
+            }
+        })
+    })
+
+
+</script>

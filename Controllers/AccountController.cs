@@ -25,6 +25,45 @@ namespace Social_Media_Project.Controllers
             return View();
         }
 
+        #region "Login Post"
+        [HttpPost]
+        public async Task<IActionResult> Login(Account pAccount)
+        {
+            string Message = "";
+            try
+            {
+                if (pAccount.Username != null && pAccount.Password != null)
+                {
+                    string url = baseUrl + "api/AccountAPI/LoginVerify";
+                    string Json = JsonConvert.SerializeObject(pAccount);
+                    StringContent content = new StringContent(Json, Encoding.UTF8, "application/json");
+                    HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                    if (res.IsSuccessStatusCode)
+                    {
+                        string resBody = await res.Content.ReadAsStringAsync();
+                        string resData = JsonConvert.DeserializeObject<string>(resBody);
+                        return RedirectToAction("UserAccountPage");
+                    }
+                    else
+                    {
+                        return StatusCode(500);
+                    }
+                }
+                else
+                {
+                    Message = "Please enter the UserName and Password";
+                    TempData["errorMessage"] = Message;
+                    TempData.Keep("errorMessage");
+                    return View("Index", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { Message = ex.Message });
+            }
+        }
+        #endregion
+
         #region "SignUp Get/Post"
 
         [HttpGet, HttpPost]
@@ -180,9 +219,69 @@ namespace Social_Media_Project.Controllers
 
         #region "Add Post"
         [HttpGet, HttpPost]
-        public IActionResult AddPost()
+        public async Task<IActionResult> AddPost(MediaPost pPost, IFormFile AddPostPhoto)
         {
-            return View();
+            string Message = "";
+            try
+            {
+                if (pPost.hdnId == 1)
+                {
+                    if (pPost.AddPostPhoto != null)
+                    {
+                        string FileName = Path.GetFileName(AddPostPhoto.FileName);
+                        string FileData = Path.Combine("wwwroot", "images", "UserPost");
+                        if (!Directory.Exists(FileData))
+                        {
+                            Directory.CreateDirectory(FileData);
+                        }
+                        string FilePath = Path.Combine(FileData, FileName);
+                        using (var Stream = new FileStream(FilePath, FileMode.Create))
+                        {
+                            await AddPostPhoto.CopyToAsync(Stream);
+                        }
+
+                        pPost.PhotoPath = FilePath;
+                        var pPostObj = new
+                        {
+                            pPost.PostCaption,
+                            pPost.PhotoPath
+                        };
+
+                        string url = baseUrl + "api/AccountAPI/CreatePost";
+                        string JsonBody = JsonConvert.SerializeObject(pPostObj);
+                        StringContent content = new StringContent(JsonBody, Encoding.UTF8, "application/json");
+                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            string resData = JsonConvert.DeserializeObject<string>(resBody);
+                        }
+                        else
+                        {
+                            return BadRequest("Error in Fetching Data or to Call the API.");
+                        }
+                        return View();
+                    }
+                    else
+                    {
+                        Message = "Please pass the required data.";
+                        TempData["errorMessage"] = Message;
+                        TempData.Keep("errorMessage");
+                        return View();
+                    }
+                }
+                else
+                {
+                    Message = "Please pass the required data.";
+                    TempData["errorMessage"] = Message;
+                    TempData.Keep("errorMessage");
+                    return View();
+                }
+            }
+            catch (Exception ex)
+            {
+                return View("Error", new { Message = ex.Message });
+            }
         }
         #endregion
     }

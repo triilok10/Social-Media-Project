@@ -2,6 +2,9 @@
 {
     public class MediaPost
     {
+        //hdnId
+        public int? hdnId { get; set; }
+
         //DateOfBirth
         public DateTime? DateOfBirth { get; set; }
         //ProfilePhoto
@@ -16,5 +19,11 @@
         public string? Fullname { get; set; }
         //PhotoPath
         public string? PhotoPath { get; set; }
+
+        //AddPostPhoto
+        public IFormFile? AddPostPhoto { get; set; }
+
+        //Post Caption
+        public IFormFile? PostCaption { get; set; }
     }
 }
