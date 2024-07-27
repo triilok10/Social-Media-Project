@@ -414,19 +414,6 @@
             text-decoration: underline;
         }
 
-.form-group-checkbox {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-    .form-group-checkbox input[type="checkbox"] {
-        margin-right: 10px;
-    }
-
-    .form-group-checkbox label {
-        margin-bottom: 0;
-    }
 
 label.error {
     color: red;
@@ -693,3 +680,7 @@ label.error {
         .bottom-buttons a.feed {
             background-color: #dc3545;
         }
+
+.signup-Margin {
+    margin: 10px 0px;
+}

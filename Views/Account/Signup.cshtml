@@ -20,6 +20,8 @@
         $(document).ready(function () {
             $("#SignUpForm").addClass('d-none');
             $("#SignUpBioForm").removeClass('d-none');
+            $("#login-form-link").addClass('d-none');
+            $("#signup-form").addClass('d-none');
         });
 
     </script>
@@ -34,6 +36,7 @@
                     <div class="signup-form-group">
                         <label asp-for="Phone">Mobile Number</label>
                         <input asp-for="Phone" id="Phone" name="Phone" class="form-control" placeholder="Mobile Number" required>
+                        <input asp-for="hdnId" type="hidden" value="1">
                     </div>
                     <div class="signup-form-group">
                         <label asp-for="Email">Email Address</label>
@@ -55,11 +58,7 @@
                         <label asp-for="ConfirmPassword">Confirm Password</label>
                         <input asp-for="ConfirmPassword" id="ConfirmPassword" name="ConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" required>
                     </div>
-                    <div class="form-group-checkbox">
-                        <input type="checkbox" id="agreeTerms" required>
-                        <label for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
-                    </div>
-                    <div class="signup-form-group">
+                    <div class="signup-form-group signup-Margin">
                         <button type="submit" class="btn-submit">Sign Up</button>
                     </div>
                     <div class="signup-form-social">
@@ -128,8 +127,7 @@
                 Fullname: { required: true },
                 Username: { required: true },
                 Password: { required: true, minlength: 6 },
-                ConfirmPassword: { required: true, equalTo: "#Password" },
-                agreeTerms: { required: true }
+                ConfirmPassword: { required: true, equalTo: "#Password" }
             },
             messages: {
                 Phone: { required: "Please enter your phone number." },
@@ -137,8 +135,7 @@
                 Fullname: { required: "Please enter your full name." },
                 Username: { required: "Please enter a username." },
                 Password: { required: "Please enter a password.", minlength: "Your password must be at least 6 characters long." },
-                ConfirmPassword: { required: "Please confirm your password.", equalTo: "Passwords do not match." },
-                agreeTerms: { required: "You must agree to the terms and privacy policy." }
+                ConfirmPassword: { required: "Please confirm your password.", equalTo: "Passwords do not match." }
             },
             errorElement: 'span',
             errorPlacement: function (error, element) {
