@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Social_Media_Project.AppCode;
 using Social_Media_Project.Models;
 using System.Drawing;
 using System.Text;
@@ -12,10 +14,12 @@ namespace Social_Media_Project.Controllers
         IHttpContextAccessor _httpContextAccessor;
         private readonly dynamic baseUrl;
 
-        public AccountController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        private readonly ISessionService _sessionService;
+        public AccountController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, ISessionService sessionService)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
+            _sessionService = sessionService;
             var request = _httpContextAccessor.HttpContext.Request;
             baseUrl = $"{request.Scheme}://{request.Host.Value}/"; _httpClient.BaseAddress = new Uri(baseUrl);
         }
@@ -81,6 +85,7 @@ namespace Social_Media_Project.Controllers
                         Message = "Please fill the required details.";
                         TempData["errorMessage"] = Message;
                         TempData.Keep("errorMessage");
+                        return View();
                     }
                     else
                     {
@@ -112,6 +117,8 @@ namespace Social_Media_Project.Controllers
                             else
                             {
                                 pAccount.Id = Convert.ToInt32(Id);
+                                _sessionService.SetString("Username", pAccount.Username);
+                                _sessionService.SetInt32("UserId", pAccount.Id);
                                 TempData["successMessage"] = Message;
                                 TempData.Keep("successMessage");
                                 return View(pAccount);
@@ -122,56 +129,64 @@ namespace Social_Media_Project.Controllers
                 }
                 else if (!string.IsNullOrWhiteSpace(pAccount.Id.ToString()))
                 {
-                    if (ProfilePhoto != null && ProfilePhoto.Length > 0)
+                    if (_sessionService.GetString("Username") != null && _sessionService.GetInt32("UserId") != null)
                     {
-                        string FileName = Path.GetFileName(ProfilePhoto.FileName);
-                        string FileData = Path.Combine("wwwroot", "images", "UserData");
-                        if (!Directory.Exists(FileData))
+                        if (ProfilePhoto != null && ProfilePhoto.Length > 0)
                         {
-                            Directory.CreateDirectory(FileData);
-                        }
-                        string FilePath = Path.Combine(FileData, FileName);
-                        using (var Stream = new FileStream(FilePath, FileMode.Create))
-                        {
-                            await ProfilePhoto.CopyToAsync(Stream);
-                        }
-
-                        pAccount.ProfilePhotoPath = "/images/UserData/" + FileName;
-
-                        string url = baseUrl + "api/AccountAPI/Signup";
-
-                        var pAccountData = new
-                        {
-                            pAccount.ProfilePhotoPath,
-                            pAccount.Id,
-                            pAccount.Bio,
-                            pAccount.DateOfBirth
-                        };
-
-                        string jsonBody = JsonConvert.SerializeObject(pAccountData);
-                        StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
-                        if (res.IsSuccessStatusCode)
-                        {
-                            string resBody = await res.Content.ReadAsStringAsync();
-                            dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
-                            Message = resData.msg;
-                            var userId = new
+                            string FileName = Path.GetFileName(ProfilePhoto.FileName);
+                            string FileData = Path.Combine("wwwroot", "images", "UserData");
+                            if (!Directory.Exists(FileData))
                             {
-                                pAccount.Id
+                                Directory.CreateDirectory(FileData);
+                            }
+                            string FilePath = Path.Combine(FileData, FileName);
+                            using (var Stream = new FileStream(FilePath, FileMode.Create))
+                            {
+                                await ProfilePhoto.CopyToAsync(Stream);
+                            }
+
+                            pAccount.ProfilePhotoPath = "/images/UserData/" + FileName;
+
+                            string url = baseUrl + "api/AccountAPI/Signup";
+
+                            var pAccountData = new
+                            {
+                                pAccount.ProfilePhotoPath,
+                                pAccount.Id,
+                                pAccount.Bio,
+                                pAccount.DateOfBirth
                             };
-                            pAccount.Id = Convert.ToInt32(resData.id);
-                            TempData["successMessage"] = Message;
-                            TempData.Keep("successMessage");
-                            return RedirectToAction("UserAccountPage", userId);
+
+                            string jsonBody = JsonConvert.SerializeObject(pAccountData);
+                            StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                            HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                            if (res.IsSuccessStatusCode)
+                            {
+                                string resBody = await res.Content.ReadAsStringAsync();
+                                dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                                Message = resData.msg;
+                                var userId = new
+                                {
+                                    pAccount.Id
+                                };
+                                pAccount.Id = Convert.ToInt32(resData.id);
+                                TempData["successMessage"] = Message;
+                                TempData.Keep("successMessage");
+                                return RedirectToAction("UserAccountPage", userId);
+                            }
                         }
+                        return View();
                     }
-                    return View();
+                    else
+                    {
+                        return View();
+                    }
                 }
                 else
                 {
-                    return View();
+                    return View("Index", "Home");
                 }
+
 
             }
             catch (Exception ex)
