@@ -28,11 +28,11 @@
             </div>
             <div class="form-group">
                 <label for="postImage">Choose an Image:</label>
-                <input asp-for="AddPostPhoto" type="file" class="form-control-file" id="postImage" name="PostImage" onchange="previewProfilePhoto(event)">
+                <input asp-for="AddPostPhoto" type="file" class="form-control-file" id="AddPostPhoto" name="AddPostPhoto" onchange="previewProfilePhoto(event)">
             </div>
             <div class="form-group">
                 <label for="caption">Caption:</label>
-                <textarea asp-for="PostCaption" class="form-control" id="caption" name="Caption" rows="3"></textarea>
+                <textarea asp-for="PostCaption" class="form-control" id="PostCaption" name="PostCaption" rows="3"></textarea>
             </div>
             <button type="submit">Upload Post</button>
         </form>

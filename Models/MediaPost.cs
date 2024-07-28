@@ -2,6 +2,8 @@
 {
     public class MediaPost
     {
+        //Id
+        public int? Id { get; set; }
         //hdnId
         public int? hdnId { get; set; }
 
@@ -24,6 +26,6 @@
         public IFormFile? AddPostPhoto { get; set; }
 
         //Post Caption
-        public IFormFile? PostCaption { get; set; }
+        public string? PostCaption { get; set; }
     }
 }

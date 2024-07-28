@@ -146,7 +146,7 @@ namespace Social_Media_Project.Controllers.API
 
         #region "Login Verify"
         [HttpPost]
-        public IActionResult LoginVerify([FromBody]  Account pAccount)
+        public IActionResult LoginVerify([FromBody] Account pAccount)
         {
             string Message = "";
             string UserIdSQL = "";
@@ -178,6 +178,42 @@ namespace Social_Media_Project.Controllers.API
                 else
                 {
                     Message = "Please pass the required parameters";
+                    return Ok(new { msg = Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return Ok(new { msg = Message });
+            }
+        }
+        #endregion
+
+        #region "Create Post"
+        [HttpPost]
+        public IActionResult CreatePost([FromBody] MediaPost pMediaPost)
+        {
+            string Message = "";
+            try
+            {
+                if (pMediaPost.Id != null && pMediaPost.PhotoPath != null)
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        SqlCommand cmd = new SqlCommand("usp_UserPost", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        con.Open();
+                        cmd.Parameters.AddWithValue("@Id",pMediaPost.Id);
+                        cmd.Parameters.AddWithValue("@Photopath", pMediaPost.PhotoPath);
+                        cmd.Parameters.AddWithValue("@PostCaption", pMediaPost.PostCaption);
+                        cmd.ExecuteNonQuery();
+                    }
+                    Message = "Post added successfully.";
+                    return Ok(new { msg = Message });
+                }
+                else
+                {
+                    Message = "Please pass the required parameters.";
                     return Ok(new { msg = Message });
                 }
             }

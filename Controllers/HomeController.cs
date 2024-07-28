@@ -27,7 +27,9 @@ namespace Social_Media_Project.Controllers
                 var UserId = _sessionService.GetInt32("UserId");
                 if (Username != null && UserId != null)
                 {
-                    return View();
+                    var currentActionUrl = TempData["currentActionUrl"].ToString();
+                    TempData.Remove("currentActionUrl"); 
+                    return Redirect(currentActionUrl);
                 }
                 else
                 {

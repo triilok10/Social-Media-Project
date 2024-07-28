@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Social_Media_Project.AppCode;
 using Social_Media_Project.Models;
 using System.Drawing;
+using System.Security.Principal;
 using System.Text;
 
 namespace Social_Media_Project.Controllers
@@ -52,7 +53,7 @@ namespace Social_Media_Project.Controllers
                         string resBody = await res.Content.ReadAsStringAsync();
                         dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
 
-                        int UserId = resData.id;
+                        string UserId = resData.id;
                         string errorMessage = resData.errmsg;
 
                         if (!string.IsNullOrEmpty(errorMessage))
@@ -64,7 +65,7 @@ namespace Social_Media_Project.Controllers
                         else
                         {
                             _sessionService.SetString("Username", pAccount.Username);
-                            _sessionService.SetInt32("UserId", UserId);
+                            _sessionService.SetInt32("UserId", Convert.ToInt32(UserId));
 
                             return RedirectToAction("UserAccountPage");
                         }
@@ -223,26 +224,28 @@ namespace Social_Media_Project.Controllers
         public async Task<IActionResult> UserAccountPage(Account pAccount)
         {
             string Message = "";
-            int Id = pAccount.Id;
             try
             {
                 var username = _sessionService.GetString("Username");
                 var userId = _sessionService.GetInt32("UserId");
-                if (username != null && userId!= null)
+                if (username != null && userId != null)
                 {
-                    //string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
-                    //string fullUrl = $"{url}?Id={Id}";
-                    //HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
-                    //if (res.IsSuccessStatusCode)
-                    //{
-                    //    string resBody = await res.Content.ReadAsStringAsync();
-                    //    List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
-                    //    return View(lstData);
-                    //}
-                    //else
-                    //{
-                    //    return BadRequest("Error fetching data from the API.");
-                    //}.
+                    string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
+                    string fullUrl = $"{url}?Id={userId}";
+                    HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
+                    if (res.IsSuccessStatusCode)
+                    {
+                        string resBody = await res.Content.ReadAsStringAsync();
+                        List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
+                        return View(lstData);
+                    }
+                    else
+                    {
+                        return BadRequest("Error fetching data from the API.");
+                    }
+                    string currentActionUrl = HttpContext.Request.Path;
+                    TempData["currentActionUrl"] = currentActionUrl;
+                    TempData.Keep("currentActionUrl");
                     return View();
                 }
                 else
@@ -265,58 +268,70 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
-                if (pPost.hdnId == 1)
+                var username = _sessionService.GetString("Username");
+                var userId = _sessionService.GetInt32("UserId");
+                if (username != null && userId != null)
                 {
-                    if (pPost.AddPostPhoto != null)
+                    if (pPost.hdnId == 1)
                     {
-                        string FileName = Path.GetFileName(AddPostPhoto.FileName);
-                        string FileData = Path.Combine("wwwroot", "images", "UserPost");
-                        if (!Directory.Exists(FileData))
+                        if (pPost.AddPostPhoto != null)
                         {
-                            Directory.CreateDirectory(FileData);
-                        }
-                        string FilePath = Path.Combine(FileData, FileName);
-                        using (var Stream = new FileStream(FilePath, FileMode.Create))
-                        {
-                            await AddPostPhoto.CopyToAsync(Stream);
-                        }
+                            string FileName = Path.GetFileName(AddPostPhoto.FileName);
+                            string FileData = Path.Combine("wwwroot", "images", "UserPost");
+                            if (!Directory.Exists(FileData))
+                            {
+                                Directory.CreateDirectory(FileData);
+                            }
+                            string FilePath = Path.Combine(FileData, FileName);
+                            using (var Stream = new FileStream(FilePath, FileMode.Create))
+                            {
+                                await AddPostPhoto.CopyToAsync(Stream);
+                            }
 
-                        pPost.PhotoPath = FilePath;
-                        var pPostObj = new
-                        {
-                            pPost.PostCaption,
-                            pPost.PhotoPath
-                        };
+                            pPost.PhotoPath = FilePath;
+                            pPost.Id = userId;
+                            var pPostObj = new
+                            {
+                                pPost.PostCaption,
+                                pPost.PhotoPath,
+                                pPost.Id
+                            };
 
-                        string url = baseUrl + "api/AccountAPI/CreatePost";
-                        string JsonBody = JsonConvert.SerializeObject(pPostObj);
-                        StringContent content = new StringContent(JsonBody, Encoding.UTF8, "application/json");
-                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
-                        if (res.IsSuccessStatusCode)
-                        {
-                            string resBody = await res.Content.ReadAsStringAsync();
-                            string resData = JsonConvert.DeserializeObject<string>(resBody);
+                            string url = baseUrl + "api/AccountAPI/CreatePost";
+                            string JsonBody = JsonConvert.SerializeObject(pPostObj);
+                            StringContent content = new StringContent(JsonBody, Encoding.UTF8, "application/json");
+                            HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                            if (res.IsSuccessStatusCode)
+                            {
+                                string resBody = await res.Content.ReadAsStringAsync();
+                                dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                                Message = resData.msg;
+                                TempData["successMessage"] = Message;
+                                TempData.Keep("successMessage");
+                                return RedirectToAction("UserAccountPage");
+                            }
+                            else
+                            {
+                                return BadRequest("Error in Fetching Data or to Call the API.");
+                            }
+                           
                         }
                         else
                         {
-                            return BadRequest("Error in Fetching Data or to Call the API.");
+                            Message = "Please pass the required data.";
+                            TempData["errorMessage"] = Message;
+                            TempData.Keep("errorMessage");
+                            return View();
                         }
-                        return View();
                     }
                     else
                     {
-                        Message = "Please pass the required data.";
-                        TempData["errorMessage"] = Message;
-                        TempData.Keep("errorMessage");
                         return View();
                     }
                 }
                 else
                 {
-                    Message = "Please pass the required data.";
-                    TempData["errorMessage"] = Message;
-                    TempData.Keep("errorMessage");
-                    return View();
+                    return RedirectToAction("Index", "Home");
                 }
             }
             catch (Exception ex)
