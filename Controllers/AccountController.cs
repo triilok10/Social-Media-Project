@@ -39,14 +39,35 @@ namespace Social_Media_Project.Controllers
                 if (pAccount.Username != null && pAccount.Password != null)
                 {
                     string url = baseUrl + "api/AccountAPI/LoginVerify";
-                    string Json = JsonConvert.SerializeObject(pAccount);
+                    var pAccountData = new
+                    {
+                        pAccount.Username,
+                        pAccount.Password
+                    };
+                    string Json = JsonConvert.SerializeObject(pAccountData);
                     StringContent content = new StringContent(Json, Encoding.UTF8, "application/json");
                     HttpResponseMessage res = await _httpClient.PostAsync(url, content);
                     if (res.IsSuccessStatusCode)
                     {
                         string resBody = await res.Content.ReadAsStringAsync();
-                        string resData = JsonConvert.DeserializeObject<string>(resBody);
-                        return RedirectToAction("UserAccountPage");
+                        dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+
+                        int UserId = resData.id;
+                        string errorMessage = resData.errmsg;
+
+                        if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            TempData["errorMessage"] = errorMessage;
+                            TempData.Keep("errorMessage");
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            _sessionService.SetString("Username", pAccount.Username);
+                            _sessionService.SetInt32("UserId", UserId);
+
+                            return RedirectToAction("UserAccountPage");
+                        }
                     }
                     else
                     {
@@ -165,14 +186,9 @@ namespace Social_Media_Project.Controllers
                                 string resBody = await res.Content.ReadAsStringAsync();
                                 dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
                                 Message = resData.msg;
-                                var userId = new
-                                {
-                                    pAccount.Id
-                                };
-                                pAccount.Id = Convert.ToInt32(resData.id);
                                 TempData["successMessage"] = Message;
                                 TempData.Keep("successMessage");
-                                return RedirectToAction("UserAccountPage", userId);
+                                return RedirectToAction("UserAccountPage");
                             }
                         }
                         return View();
@@ -210,20 +226,30 @@ namespace Social_Media_Project.Controllers
             int Id = pAccount.Id;
             try
             {
-                //string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
-                //string fullUrl = $"{url}?Id={Id}";
-                //HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
-                //if (res.IsSuccessStatusCode)
-                //{
-                //    string resBody = await res.Content.ReadAsStringAsync();
-                //    List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
-                //    return View(lstData);
-                //}
-                //else
-                //{
-                //    return BadRequest("Error fetching data from the API.");
-                //}
-                return View();
+                var username = _sessionService.GetString("Username");
+                var userId = _sessionService.GetInt32("UserId");
+                if (username != null && userId!= null)
+                {
+                    //string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
+                    //string fullUrl = $"{url}?Id={Id}";
+                    //HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
+                    //if (res.IsSuccessStatusCode)
+                    //{
+                    //    string resBody = await res.Content.ReadAsStringAsync();
+                    //    List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
+                    //    return View(lstData);
+                    //}
+                    //else
+                    //{
+                    //    return BadRequest("Error fetching data from the API.");
+                    //}.
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
             }
             catch (Exception ex)
             {

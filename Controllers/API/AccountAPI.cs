@@ -143,5 +143,50 @@ namespace Social_Media_Project.Controllers.API
         }
         #endregion
 
+
+        #region "Login Verify"
+        [HttpPost]
+        public IActionResult LoginVerify([FromBody]  Account pAccount)
+        {
+            string Message = "";
+            string UserIdSQL = "";
+            string ErrorMessageSQL = "";
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(pAccount.Username) && !string.IsNullOrWhiteSpace(pAccount.Password))
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand("usp_loginVerify", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Username", pAccount.Username);
+                        cmd.Parameters.AddWithValue("@Password", pAccount.Password);
+                        SqlParameter UserId = new SqlParameter("@UserId", SqlDbType.Int, 5);
+                        UserId.Direction = ParameterDirection.Output;
+                        SqlParameter ErrorMessage = new SqlParameter("@ErrorMessage", SqlDbType.NVarChar, 100);
+                        ErrorMessage.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(UserId);
+                        cmd.Parameters.Add(ErrorMessage);
+                        cmd.ExecuteNonQuery();
+                        UserIdSQL = cmd.Parameters["@UserId"].Value.ToString();
+                        ErrorMessageSQL = cmd.Parameters["@ErrorMessage"].Value.ToString();
+                    }
+                    return Ok(new { id = UserIdSQL, errmsg = ErrorMessageSQL });
+                }
+                else
+                {
+                    Message = "Please pass the required parameters";
+                    return Ok(new { msg = Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return Ok(new { msg = Message });
+            }
+        }
+        #endregion
     }
 }

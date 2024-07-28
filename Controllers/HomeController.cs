@@ -16,9 +16,32 @@ namespace Social_Media_Project.Controllers
             _sessionService = sessionService;
         }
 
+
+
         public IActionResult Index()
         {
-            return View();
+            string Message = "";
+            try
+            {
+                var Username = _sessionService.GetString("Username");
+                var UserId = _sessionService.GetInt32("UserId");
+                if (Username != null && UserId != null)
+                {
+                    return View();
+                }
+                else
+                {
+                    return View();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                TempData["errorMessage"] = Message;
+                TempData.Keep("errorMessage");
+                return View("Error");
+            }
         }
 
         public IActionResult Privacy()
