@@ -111,8 +111,9 @@ namespace Social_Media_Project.Controllers.API
 
         #region "Get User Home Details"
         [HttpGet]
-        public IActionResult GetUserHomeDetails(int Id)
+        public IActionResult GetUserBioDetails(int Id)
         {
+            string Message = "";
             try
             {
                 MediaPost objAccount = new MediaPost();
@@ -121,6 +122,7 @@ namespace Social_Media_Project.Controllers.API
                     SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
                     con.Open();
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 1);
                     cmd.Parameters.AddWithValue("@Id", Id);
                     using (SqlDataReader rdr = cmd.ExecuteReader())
                     {
@@ -137,10 +139,52 @@ namespace Social_Media_Project.Controllers.API
             }
             catch (Exception ex)
             {
-                return Ok(ex.Message);
+                Message = ex.Message;
+                return Ok(new { msg = Message });
             }
 
         }
+
+
+
+        [HttpGet]
+        public IActionResult GetUserPostDetails(int Id)
+        {
+            string Message = "";
+            try
+            {
+                List<MediaPost> ltrMediaPost = new List<MediaPost>();
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    con.Open();
+                    cmd.Parameters.AddWithValue("@Mode", 2);
+                    cmd.Parameters.AddWithValue("@Id", Id);
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            MediaPost objAccount = new MediaPost
+                            {
+                                PhotoPath = Convert.ToString(rdr["PhotoPath"]),
+                                PostCaption = Convert.ToString(rdr["PostCaption"])
+                            };
+                            ltrMediaPost.Add(objAccount);
+                        }
+                    }
+                }
+                return Ok(ltrMediaPost);
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return StatusCode(500, new { msg = Message });
+            }
+        }
+
+
         #endregion
 
 
@@ -203,7 +247,7 @@ namespace Social_Media_Project.Controllers.API
                         SqlCommand cmd = new SqlCommand("usp_UserPost", con);
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         con.Open();
-                        cmd.Parameters.AddWithValue("@Id",pMediaPost.Id);
+                        cmd.Parameters.AddWithValue("@Id", pMediaPost.Id);
                         cmd.Parameters.AddWithValue("@Photopath", pMediaPost.PhotoPath);
                         cmd.Parameters.AddWithValue("@PostCaption", pMediaPost.PostCaption);
                         cmd.ExecuteNonQuery();

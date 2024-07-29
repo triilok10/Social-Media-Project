@@ -9,8 +9,7 @@
 
         //DateOfBirth
         public DateTime? DateOfBirth { get; set; }
-        //ProfilePhoto
-        public IFormFile? ProfilePhoto { get; set; }
+
         //ProfilePhotoPath
         public string? ProfilePhotoPath { get; set; }
         //Bio
@@ -21,7 +20,8 @@
         public string? Fullname { get; set; }
         //PhotoPath
         public string? PhotoPath { get; set; }
-
+        //ProfilePhoto
+        public IFormFile? ProfilePhoto { get; set; }
         //AddPostPhoto
         public IFormFile? AddPostPhoto { get; set; }
 

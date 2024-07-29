@@ -23,11 +23,10 @@
         <div class="UserAccountPage-Data">
             <div class="profilePicStyle">
                 <div class="profilePic-Align">
-                    @* <img src="@ViewBag.ProfilePhotoPath" alt="Profile Photo" class="userAccountPage-ProfileImg" /> *@
-                    <img src="~/images/userdata/dsc_0002.jpg" alt="Profile Photo" class="userAccountPage-ProfileImg" />
+                    <img src="@ViewBag.profilePhotoPath" alt="Profile Photo" class="userAccountPage-ProfileImg" />
                 </div>
-                @* <div>@ViewBag.Fullname</div>   *@
-                <div>Trilok Chand Swami</div>
+                <div>@ViewBag.fullname</div>
+
             </div>
             <div class="UserAccountPage-ProfileSection">
                 <div class="ProfileStat">
@@ -45,16 +44,10 @@
             </div>
         </div>
         <div class="UserAccountPage-BioSection">
-            <p><strong>10/02/2003</strong></p>
-            @* <p><strong>@ViewBag.DateOfBirth</strong></p> *@
+            <p><strong>@ViewBag.dateOfBirth</strong></p>
             <br />
-            @*   <p>@ViewBag.Bio</p> *@
-            <p>
-                Talk is cheap. Show me the code." - Linus Torvalds
-                "Perfection is achieved not when there is nothing more to add, but rather when there is nothing more to take away." - Antoine de Saint-Exupéry
-                "Simplicity is the soul of efficiency." - Austin Freeman
-                "Programs must be written for people to read, and only incidentally for machines to execute." - Harold Abelson
-            </p>
+            <p>@ViewBag.bio</p>
+
         </div>
         <div class="UserAccountPage-BioSection bioEdit">
             <a class="childBioEdit" href="#">Edit Profile</a>

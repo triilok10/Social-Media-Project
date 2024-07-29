@@ -226,27 +226,46 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
                 var username = _sessionService.GetString("Username");
                 var userId = _sessionService.GetInt32("UserId");
                 if (username != null && userId != null)
                 {
-                    string url = baseUrl + "api/AccountAPI/GetUserHomeDetails";
+                    //Call API to Get the Bio Details
+                    string url = baseUrl + "api/AccountAPI/GetUserBioDetails";
                     string fullUrl = $"{url}?Id={userId}";
                     HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
                     if (res.IsSuccessStatusCode)
                     {
                         string resBody = await res.Content.ReadAsStringAsync();
-                        List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
-                        return View(lstData);
+                        dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                        ViewBag.fullname = resData.fullname;
+                        ViewBag.profilePhotoPath = resData.profilePhotoPath;
+                        ViewBag.bio = resData.bio;
+                        ViewBag.dateOfBirth = resData.dateOfBirth;
+
+                        //Call the API to get the User Post Details here.
+                        string purl = baseUrl + "api/AccountAPI/GetUserPostDetails";
+                        string pfullUrl = $"{purl}?Id={userId}";
+                        HttpResponseMessage pres = await _httpClient.GetAsync(pfullUrl);
+                        if (pres.IsSuccessStatusCode)
+                        {
+                            string presBody = await pres.Content.ReadAsStringAsync();
+                            List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(presBody);
+                            return View(lstData);
+                        }
+                        else
+                        {
+                            return BadRequest("Error fetching data from the API.");
+                        }
                     }
                     else
                     {
                         return BadRequest("Error fetching data from the API.");
                     }
-                    string currentActionUrl = HttpContext.Request.Path;
-                    TempData["currentActionUrl"] = currentActionUrl;
-                    TempData.Keep("currentActionUrl");
-                    return View();
+
                 }
                 else
                 {
@@ -256,7 +275,8 @@ namespace Social_Media_Project.Controllers
             }
             catch (Exception ex)
             {
-                return View("Error", new { Message = ex.Message });
+                Message = ex.Message;
+                return View("Error", new { msg = Message });
             }
         }
         #endregion
@@ -314,7 +334,7 @@ namespace Social_Media_Project.Controllers
                             {
                                 return BadRequest("Error in Fetching Data or to Call the API.");
                             }
-                           
+
                         }
                         else
                         {
