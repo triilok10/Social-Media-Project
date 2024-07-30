@@ -360,5 +360,38 @@ namespace Social_Media_Project.Controllers
             }
         }
         #endregion
+
+        #region "Search Account"
+        public IActionResult SearchProfile()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return View();
+        }
+        #endregion
+
+
+        #region "Feed "
+        public IActionResult Feed()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Ok();
+        }
+        #endregion
     }
 }

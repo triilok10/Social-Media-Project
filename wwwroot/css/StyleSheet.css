@@ -250,6 +250,7 @@
     background-color: #f9f9f9;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .previewImageAlign {
     display: flex;
     justify-content: center;
@@ -611,7 +612,7 @@ label.error {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-/*    justify-content: center;*/
+    /*    justify-content: center;*/
     width: 100%;
     max-width: 800px;
     margin: 20px auto;
@@ -708,4 +709,109 @@ label.error {
 
 .signup-Margin {
     margin: 10px 0px;
+}
+
+
+/*CSS Design for the Search Page*/
+
+.containerSearch {
+    border: 1px solid black;
+    box-shadow: 0 0 10px rgba(0, 0.1, 0.1, 0.3);
+    border-radius: 2px;
+    padding: 50px;
+}
+
+.containerSearch-Panel {
+    border: 1px solid black;
+    box-shadow: 0 0 10px rgba(0, 0.1, 0.1, 0.3);
+    border-radius: 2px;
+    padding: 10px;
+    margin: 10px 0px 0px 0px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+    .search-bar input {
+        width: 70%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        font-size: 16px;
+    }
+
+    .search-bar button {
+        padding: 10px 20px;
+        border: 1px solid #ddd;
+        border-radius: 0 4px 4px 0;
+        background-color: #5a67d8;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        .search-bar button:hover {
+            background-color: #4c51bf;
+        }
+
+.search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 75%;
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+    .profile-info h3 {
+        margin: 0;
+        color: #333;
+    }
+
+    .profile-info p {
+        margin: 5px 0;
+        color: #666;
+    }
+
+    .profile-info a {
+        color: #5a67d8;
+        text-decoration: none;
+    }
+
+        .profile-info a:hover {
+            text-decoration: underline;
+        }
+
+.search-results-Align {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
