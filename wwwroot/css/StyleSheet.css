@@ -611,7 +611,7 @@ label.error {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    justify-content: center;
+/*    justify-content: center;*/
     width: 100%;
     max-width: 800px;
     margin: 20px auto;
@@ -627,7 +627,7 @@ label.error {
 
 .PhotoSectionImg {
     width: 100%;
-    height: auto;
+    height: 200px;
     display: block;
 }
 
@@ -656,6 +656,14 @@ label.error {
             color: #777;
             font-size: 0.9em;
         }
+
+
+.forEach-AlignClass {
+    height: auto;
+    width: 32.2%;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
 
 .bottom-buttons {
     display: flex;

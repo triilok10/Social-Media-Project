@@ -308,7 +308,7 @@ namespace Social_Media_Project.Controllers
                                 await AddPostPhoto.CopyToAsync(Stream);
                             }
 
-                            pPost.PhotoPath = FilePath;
+                            pPost.PhotoPath = "/images/UserPost/" + FileName;
                             pPost.Id = userId;
                             var pPostObj = new
                             {

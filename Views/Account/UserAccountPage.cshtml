@@ -19,7 +19,7 @@
 
 
 <div class="fix-AlignHomePage">
-    <div>
+    <div style="width:800px;">
         <div class="UserAccountPage-Data">
             <div class="profilePicStyle">
                 <div class="profilePic-Align">
@@ -54,12 +54,15 @@
             <a class="childBioEdit" href="#">Share Profile</a>
         </div>
         <div class="homepage-PhotoSection">
-            @*   @foreach (var post in Model)
-            { *@
-            <div class="PhotoSection-Child">
-                @*       <img src="@post.PhotoPath" alt="Post Photo" class="PhotoSectionImg" /> *@
-            </div>
-            @* } *@
+            @foreach (var post in Model)
+            {
+                <div class="forEach-AlignClass" >
+                    <div class="PhotoSection-Child">
+                        <img src="@post.PhotoPath" alt="Post Photo" class="PhotoSectionImg" />
+                    </div>
+                    <div>@post.PostCaption</div>
+                </div>
+            }
         </div>
         <div class="bottom-buttons">
             <a class="feed" href="@Url.Action("Feed","Account")">Following Feed</a>
