@@ -1,0 +1,72 @@
+﻿@using Social_Media_Project.Models;
+@model List<MediaPost>;
+@{
+    ViewData["Title"] = "Feed";
+}
+
+
+<div class="container-custom mt-4">
+    <h1 class="mb-4">Feed</h1>
+    @foreach (var i in Model)
+    {
+        <div class="card shadow-sm border-light mb-4">
+            <div class="d-flex justify-content-between">
+                <div style="height: 50px; width: 50px; border-radius: 50%; border: 1px solid black">
+                    <img src="@i.ProfilePhotoPath" alt="Profile Image" style="height: 48px; width: 48px; padding: 2px; border-radius: 50%;">
+                </div>
+                <a href="javascript:void(0);" class="backGroundIng-HomePage" onclick="js_ViewFeedProfile('@i.UserId');">
+                    <img src="/images/three-dots-vertical.svg" style="height: 40px; padding: 5px;" />
+                </a>
+                <ul class="homeSetting" id="homeSetting-@i.UserId">
+                    <li class="listData">
+                        <a href="#messages" class="text-decoration-none">Messages</a>
+                    </li>
+                    <li class="listData">
+                        <a href="#blocklist" class="text-decoration-none">Block List</a>
+                    </li>
+                    <li class="listData">
+                        <a href="#download-profile-data" class="text-decoration-none">Download Profile Data</a>
+                    </li>
+                    <li class="listData">
+                        <a href="@Url.Action("Logout", "Account")" class="text-decoration-none">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            <img src="@i.PhotoPath" class="card-img-top" alt="Post Image">
+            <div class="card-body">
+                <h5 class="card-title">@i.Username</h5>
+                <p class="card-text">@i.PostCaption</p>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-primary">Like</button>
+                    <button class="btn btn-outline-secondary">Comment</button>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="fixed-bottom" style="margin: 0 0 25px 0;">
+        <div class="bottom-buttons">
+            <a class="feed" href="@Url.Action("Feed", "Account")">Following Feed</a>
+            <a class="search" href="@Url.Action("SearchProfile", "Account")">Search Profile</a>
+            <a class="add-post" href="@Url.Action("AddPost", "Account")">Add Post</a>
+            <a class="home" href="@Url.Action("UserAccountPage", "Account")">Home</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function js_ViewFeedProfile(UserId) {
+        var allSettings = document.querySelectorAll('.homeSetting');
+        allSettings.forEach(function (setting) {
+            if (setting.id !== 'homeSetting-' + UserId) {
+                setting.style.display = 'none';
+            }
+        });
+
+        var element = document.getElementById('homeSetting-' + UserId);
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>

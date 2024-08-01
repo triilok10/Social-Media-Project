@@ -132,6 +132,7 @@ namespace Social_Media_Project.Controllers.API
                             objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
                             objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
                             objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
+                            objAccount.Username = Convert.ToString(rdr["Username"]);
                         }
                     }
                 }
@@ -248,6 +249,7 @@ namespace Social_Media_Project.Controllers.API
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         con.Open();
                         cmd.Parameters.AddWithValue("@Id", pMediaPost.Id);
+                        cmd.Parameters.AddWithValue("@Mode", 1);
                         cmd.Parameters.AddWithValue("@Photopath", pMediaPost.PhotoPath);
                         cmd.Parameters.AddWithValue("@PostCaption", pMediaPost.PostCaption);
                         cmd.ExecuteNonQuery();
@@ -266,6 +268,95 @@ namespace Social_Media_Project.Controllers.API
                 Message = ex.Message;
                 return Ok(new { msg = Message });
             }
+        }
+        #endregion
+
+
+        #region "Search Profile"
+        [HttpGet]
+        public IActionResult SearchProfile(string SearchName = "")
+        {
+            try
+            {
+                List<MediaPost> lstPost = new List<MediaPost>();
+
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_UserPost", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 2);
+                    cmd.Parameters.AddWithValue("@Search", SearchName ?? string.Empty);
+
+                    con.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            MediaPost obj = new MediaPost
+                            {
+                                Fullname = Convert.ToString(reader["FullName"]),
+                                Username = Convert.ToString(reader["Username"]),
+                                ProfilePhotoPath = Convert.ToString(reader["ProfilePhotoPath"]),
+                                Bio = Convert.ToString(reader["ProfileBio"])
+                            };
+                            lstPost.Add(obj);
+                        }
+                    }
+                    return Ok(lstPost);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    msg = ex.Message
+                });
+            }
+        }
+        #endregion
+
+
+        #region "Feed Data"
+        [HttpGet]
+        public IActionResult FeedData()
+        {
+            string Message = "";
+            List<MediaPost> lstPost = new List<MediaPost>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_UserPost", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    con.Open();
+                    cmd.Parameters.AddWithValue("@Mode", 3);
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+
+                        while (rdr.Read())
+                        {
+                            MediaPost obj = new MediaPost
+                            {
+                                Fullname = Convert.ToString(rdr["FullName"]),
+                                Username = Convert.ToString(rdr["Username"]),
+                                ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]),
+                                PhotoPath = Convert.ToString(rdr["PhotoPath"]),
+                                PostCaption = Convert.ToString(rdr["PostCaption"]),
+                                Id = Convert.ToInt32(rdr["UserId"]),
+                                UserId = Convert.ToInt32(rdr["Id"])
+                            };
+                            lstPost.Add(obj);
+                        }
+                    }
+                    return Ok(lstPost);
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return Ok(new { msg = Message });
+            }
+
         }
         #endregion
     }

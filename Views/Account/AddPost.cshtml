@@ -37,11 +37,13 @@
             <button type="submit">Upload Post</button>
         </form>
     </div>
-    <div class="bottom-buttons">
-        <a class="feed" href="@Url.Action("Feed","Account")">Following Feed</a>
-        <a class="search" href="@Url.Action("SearchProfile","Account")">Search Profile</a>
-        <a class="add-post" href="@Url.Action("AddPost","Account")">Add Post</a>
-        <a class="home" href="@Url.Action("UserAccountPage","Account")">Home</a>
+    <div class="fixed-bottom" style="margin: 0px 0px 25px 0px;">
+        <div class="bottom-buttons">
+            <a class="feed" href="@Url.Action("Feed", "Account")">Following Feed</a>
+            <a class="search" href="@Url.Action("SearchProfile", "Account")">Search Profile</a>
+            <a class="add-post" href="@Url.Action("AddPost", "Account")">Add Post</a>
+            <a class="home" href="@Url.Action("UserAccountPage", "Account")">Home</a>
+        </div>
     </div>
 </div>
 

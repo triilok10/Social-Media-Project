@@ -4,9 +4,10 @@
 
 
 <div class="containerSearch">
-    <h1 style="margin: 0px 0px 20px 0px;">SearchProfile</h1>
+    <h1 style="margin: 0px 0px 20px 0px;">Search Profile</h1>
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search for profiles..." />
+        <input type="hidden" id="hiddenId" value="1" />
         <button type="button" onclick="performSearch()">Search</button>
     </div>
     <div class="search-results-Align">
@@ -14,39 +15,56 @@
         </div>
     </div>
 </div>
-<div class="containerSearch-Panel">
+<div class="fixed-bottom" style="margin: 0px 0px 25px 0px;">
     <div class="bottom-buttons">
-        <a class="feed" href="@Url.Action("Feed","Account")">Following Feed</a>
-        <a class="search" href="@Url.Action("SearchProfile","Account")">Search Profile</a>
-        <a class="add-post" href="@Url.Action("AddPost","Account")">Add Post</a>
-        <a class="home" href="@Url.Action("UserAccountPage","Account")">Home</a>
+        <a class="feed" href="@Url.Action("Feed", "Account")">Following Feed</a>
+        <a class="search" href="@Url.Action("SearchProfile", "Account")">Search Profile</a>
+        <a class="add-post" href="@Url.Action("AddPost", "Account")">Add Post</a>
+        <a class="home" href="@Url.Action("UserAccountPage", "Account")">Home</a>
     </div>
 </div>
 
 
 
 
-<script>
+<script type="text/javascript">
     function performSearch() {
         var query = document.getElementById("searchInput").value;
-        // Replace this with actual search logic
-        document.getElementById("searchResults").innerHTML = `
-                                                                            <div class="profile-card">
-                                                                                <img src="https://via.placeholder.com/100" alt="Profile Photo" class="profile-img"/>
-                                                                                <div class="profile-info">
-                                                                                    <h3>Trilok Chand Swami</h3>
-                                                                                    <p>Trilok</p>
-                                                                                    <a href="#">View Profile</a>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="profile-card">
-                                                                                <img src="https://via.placeholder.com/100" alt="Profile Photo" class="profile-img"/>
-                                                                                <div class="profile-info">
-                                                                                    <h3>Tikku Rocky</h3>
-                                                                                    <p>Rocky</p>
-                                                                                    <a href="#">View Profile</a>
-                                                                                </div>
-                                                                            </div>
-                                                                        `;
+        var url = '@Url.Action("SearchProfile", "Account")';
+        var hdnId = document.getElementById("hiddenId").value;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { SearchName: query, hidden: hdnId },
+            success: function (response) {
+                var resultsContainer = document.getElementById("searchResults");
+                resultsContainer.innerHTML = '';
+
+                if (response.length === 0) {
+                    resultsContainer.innerHTML = '<p class="text-center">No profiles found.</p>';
+                    return;
+                }
+                response.forEach(function (post) {
+                    var profileCard = `
+                                        <div class="profile-card">
+                                            <img src="${post.profilePhotoPath || 'https://via.placeholder.com/100'}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                            <div class="profile-info">
+                                                <h3>${post.fullname || 'No Name'}</h3>
+                                                <p>${post.username || 'No Username'}</p>
+                                                <a href="#">View Profile</a>
+                                            </div>
+                                        </div>
+                                    `;
+                    resultsContainer.innerHTML += profileCard;
+                });
+            },
+            error: function (error) {
+                console.error("Error during AJAX request:", error);
+                document.getElementById("searchResults").innerHTML = '<p>An error occurred while searching.</p>';
+            }
+        });
     }
+
 </script>
+

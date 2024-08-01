@@ -4,6 +4,8 @@
     {
         //Id
         public int? Id { get; set; }
+        //UserId
+        public int? UserId { get; set; }
         //hdnId
         public int? hdnId { get; set; }
 
@@ -12,6 +14,10 @@
 
         //ProfilePhotoPath
         public string? ProfilePhotoPath { get; set; }
+
+        //Username
+        public string? Username { get; set; }
+
         //Bio
         public string? Bio { get; set; }
         //Posts

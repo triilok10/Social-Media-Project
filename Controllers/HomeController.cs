@@ -51,11 +51,6 @@ namespace Social_Media_Project.Controllers
             return View();
         }
 
-        public IActionResult ClearSession()
-        {
-            _sessionService.Remove("WelcomeMessage");
-            return RedirectToAction("Index");
-        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

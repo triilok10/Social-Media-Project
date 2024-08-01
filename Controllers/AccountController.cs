@@ -90,6 +90,28 @@ namespace Social_Media_Project.Controllers
         }
         #endregion
 
+        #region "Logout
+        public IActionResult Logout()
+        {
+            string Message = "";
+            try
+            {
+                _sessionService.Remove("Username");
+                _sessionService.Remove("UserId");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                TempData["errorMessage"] = "Error in Clearing the Session";
+                TempData.Keep("errorMessage");
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+
+        #endregion
+
         #region "SignUp Get/Post"
 
         [HttpGet, HttpPost]
@@ -214,6 +236,8 @@ namespace Social_Media_Project.Controllers
 
         #endregion
 
+
+
         public IActionResult ForgottenPassword()
         {
             return View();
@@ -245,6 +269,7 @@ namespace Social_Media_Project.Controllers
                         ViewBag.profilePhotoPath = resData.profilePhotoPath;
                         ViewBag.bio = resData.bio;
                         ViewBag.dateOfBirth = resData.dateOfBirth;
+                        ViewBag.username = resData.username;
 
                         //Call the API to get the User Post Details here.
                         string purl = baseUrl + "api/AccountAPI/GetUserPostDetails";
@@ -362,35 +387,95 @@ namespace Social_Media_Project.Controllers
         #endregion
 
         #region "Search Account"
-        public IActionResult SearchProfile()
+        [HttpGet, HttpPost]
+        public async Task<IActionResult> SearchProfile(string SearchName = "", string hidden = "")
         {
+            string Message = "";
             try
             {
+                var username = _sessionService.GetString("Username");
+                var userId = _sessionService.GetInt32("UserId");
+                if (username != null && userId != null)
+                {
+                    if (hidden == "1")
+                    {
+                        string url = baseUrl + "api/AccountAPI/SearchProfile";
+                        string fullUrl = url + $"?SearchName={SearchName}";
+
+                        HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            List<MediaPost> lstMedia = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
+                            return Ok(lstMedia);
+                        }
+                        else
+                        {
+                            return BadRequest("Error to fetch the Data");
+                        }
+                    }
+                    else
+                    {
+                        return View();
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
 
             }
             catch (Exception ex)
             {
-
+                Message = ex.Message;
+                TempData["errorMessage"] = Message;
+                TempData.Keep("errorMessage");
+                return RedirectToAction("Index", "Home");
             }
-
-            return View();
         }
         #endregion
 
 
         #region "Feed "
-        public IActionResult Feed()
+        public async Task<IActionResult> Feed()
         {
+            string Message = "";
             try
             {
+                var username = _sessionService.GetString("Username");
+                var userId = _sessionService.GetInt32("UserId");
+                if (username != null && userId != null)
+                {
+                    string url = baseUrl + "api/AccountAPI/FeedData";
+                    HttpResponseMessage res = await _httpClient.GetAsync(url);
+                    if (res.IsSuccessStatusCode)
+                    {
+                        string resBody = await res.Content.ReadAsStringAsync();
+                        List<MediaPost> lstPost = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
+                        return View(lstPost);
+                    }
+                    else
+                    {
+                        Message = "Error in Fetching Data";
+                        TempData["errorMessage"] = Message;
+                        TempData.Keep("errorMessage");
+                        return View();
+                    }
 
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             catch (Exception ex)
             {
-
+                Message = ex.Message;
+                TempData["errorMessage"] = Message;
+                TempData.Keep("errorMessage");
+                return RedirectToAction("Index", "Home");
             }
-
-            return Ok();
         }
         #endregion
     }
