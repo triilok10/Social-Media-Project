@@ -153,7 +153,6 @@
         background-color: #44bcf0;
         color: white;
         border: none;
-        margin: 10px 0px 0px 0px;
         padding: 12px 20px;
         border-radius: 5px;
         font-size: 16px;
@@ -217,27 +216,6 @@
     display: flex;
     justify-content: center;
     align-content: center;
-}
-
-.submit-SignUpButtonGoogle {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    margin: 10px 0px 0px 0px;
-}
-
-.right-Mobile .input-validated {
-    background-color: #e8462a;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
 }
 
 .fixAlign {
