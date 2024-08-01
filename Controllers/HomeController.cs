@@ -35,7 +35,6 @@ namespace Social_Media_Project.Controllers
                 {
                     return View();
                 }
-
             }
             catch (Exception ex)
             {
