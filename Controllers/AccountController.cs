@@ -9,6 +9,7 @@ using Social_Media_Project.Models;
 using System.Drawing;
 using System.Security.Principal;
 using System.Text;
+using System.Security.Claims;
 
 namespace Social_Media_Project.Controllers
 {
@@ -492,16 +493,46 @@ namespace Social_Media_Project.Controllers
         public async Task<IActionResult> GoogleLogout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("SignIn", "Account");
         }
 
         public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (!result.Succeeded)
-                return RedirectToAction("Index", "Home");
 
-            return Redirect(returnUrl);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims;
+
+
+            var nameClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+            var emailClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            //return Json(claims);
+            if (!result.Succeeded)
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                GoogleAuth googleAuth = new GoogleAuth();
+                googleAuth.Name = nameClaim.ToString();
+                googleAuth.Email = emailClaim.ToString();
+
+                string url = baseUrl + "api/GoogleAuth/GoogleRegister";
+                string Jsonbody = JsonConvert.SerializeObject(googleAuth);
+                StringContent content = new StringContent(Jsonbody, Encoding.UTF8, "application/json");
+                HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                if (res.IsSuccessStatusCode)
+                {
+                    string resBody = await res.Content.ReadAsStringAsync();
+                    return RedirectToAction("UserAccountPage", "Account");
+                }
+                else
+                {
+                    return Redirect(returnUrl);
+                }
+
+
+            }
+
         }
         #endregion
     }
