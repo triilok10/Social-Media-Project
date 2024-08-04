@@ -1,5 +1,6 @@
 ﻿@model List<Social_Media_Project.Models.MediaPost>
 <link href="~/css/stylesheet.css" rel="stylesheet" />
+<script src="~/js/html2pdf.bundle.js"></script>
 @{
     ViewData["Title"] = "UserAccountPage";
 }
@@ -16,7 +17,51 @@
         toastr.success("@TempData["successMessage"]");
     </script>
 }
+<style>
 
+    #dataDownload {
+        text-align: center;
+        display: none;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #dataDownload th, #dataDownload td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+    #photo-container {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    #profile-photo {
+        height: 200px;
+        width: 200px;
+        border-radius: 50%;
+        border: 2px solid #ddd;
+    }
+
+    .pdfDownloadHeading {
+        border: 1px solid black;
+        width: 100%;
+        background-color: black;
+        color: white;
+        padding: 2px;
+    }
+
+    .pdf-DataDownload {
+        height: 200px;
+        width: 200px;
+    }
+
+    .pdfDownloadTable {
+        display: flex;
+        justify-content: center;
+    }
+</style>
 <div class="fix-AlignHomePage">
     <div style="width:800px;">
         <div style="border: 1px solid #ddd; display: flex; position: relative;">
@@ -54,7 +99,7 @@
                         <a href="#logout" class="text-decoration-none">Block List</a>
                     </li>
                     <li class="listData">
-                        <a href="#download-profile-data" class="text-decoration-none">Download Profile Data</a>
+                        <a href="#download-profile-data" onclick="generatePDF();" class="text-decoration-none">Download Profile Data</a>
                     </li>
                     <li class="listData">
                         <a href="@Url.Action("Logout","Account")" class="text-decoration-none">Logout</a>
@@ -95,7 +140,54 @@
             </div>
         </div>
     </div>
+    <div id="dataDownload">
+        <h3 class="pdfDownloadHeading">Profile Data</h3>
+        <div id="photo-container" style="display:flex; justify-content:center;">
+            <img src="@ViewBag.profilePhotoPath" alt="Profile Photo" class="pdf-DataDownload" />
+        </div>
+        <div style="display:flex;justify-content:center; margin:15px;">
+            <div class="pdfDownloadTable" style="width:90%;padding:5px;">
+                <table>
+                    <tr>
+                        <th>Username</th>
+                        <td id="profile-username">@ViewBag.username</td>
+                    </tr>
+                    <tr>
+                        <th>Current Date</th>
+                        <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    </tr>
+                    <tr>
+                        <th>Date Of Birth</th>
+                        <td>@ViewBag.dateOfBirth</td>
+                    </tr>
+                    <tr>
+                        <th>Full Name</th>
+                        <td id="profile-fullname">@ViewBag.fullname</td>
+                    </tr>
+                    <tr>
+                        <th>Bio</th>
+                        <td id="profile-bio">@ViewBag.bio</td>
+                    </tr>
+                    <tr>
+                        <th>Followers</th>
+                        <td id="profile-followers">@ViewBag.followers</td>
+                    </tr>
+                    <tr>
+                        <th>Following</th>
+                        <td id="profile-following">@ViewBag.following</td>
+                    </tr>
+                    <tr>
+                        <th>Posts</th>
+                        <td id="profile-posts">@ViewBag.posts</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <p>This is the computer-generated receipt.</p>
+    </div>
 </div>
+
 
 <script type="text/javascript">
     function js_homeSetting() {
@@ -107,5 +199,20 @@
             element.classList.remove('show');
             element.classList.add('d-none');
         }
+    }
+
+
+    function generatePDF() {
+        const element = document.getElementById('dataDownload');
+        element.style.display = 'block';
+        html2pdf().from(element).set({
+            margin: [0.5, 0.5, 0.5, 0.5],
+            filename: 'profile-data.pdf',
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 6, logging: true, useCORS: true },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        }).save().then(() => {
+            element.style.display = 'none';
+        });
     }
 </script>
