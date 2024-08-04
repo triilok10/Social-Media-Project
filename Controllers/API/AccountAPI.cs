@@ -294,6 +294,7 @@ namespace Social_Media_Project.Controllers.API
                         {
                             MediaPost obj = new MediaPost
                             {
+                                Id = Convert.ToInt32(reader["Id"]),
                                 Fullname = Convert.ToString(reader["FullName"]),
                                 Username = Convert.ToString(reader["Username"]),
                                 ProfilePhotoPath = Convert.ToString(reader["ProfilePhotoPath"]),
@@ -359,5 +360,27 @@ namespace Social_Media_Project.Controllers.API
 
         }
         #endregion
+
+        //#region "Search User Profile"
+        //[HttpGet]
+        //public IActionResult SearchUserHomePage(string Id = "")
+        //{
+        //    try
+        //    {
+        //        using (SqlConnection con = new SqlConnection(_connectionString))
+        //        {
+        //            SqlCommand cmd = new SqlCommand("", con);
+        //            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+        //            con.Open();
+        //            cmd.Parameters.AddWithValue("@Id", Id);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return Ok();
+        //}
+        //#endregion
     }
 }

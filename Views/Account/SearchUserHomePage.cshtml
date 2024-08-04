@@ -1,0 +1,68 @@
+﻿@model List<Social_Media_Project.Models.MediaPost>
+<link href="~/css/stylesheet.css" rel="stylesheet" />
+<script src="~/js/html2pdf.bundle.js"></script>
+@{
+    ViewData["Title"] = "SearchUserHomePage";
+}
+
+<div class="fix-AlignHomePage">
+    <div style="width:800px;">
+        <div style="border: 1px solid #ddd; display: flex; position: relative;">
+            <div class="UserAccountPage-Data">
+                <div class="profilePicStyle">
+                    <div class="profilePic-Align">
+                        <img src="@ViewBag.profilePhotoPath" alt="Profile Photo" class="userAccountPage-ProfileImg" />
+                    </div>
+                    <div>@ViewBag.fullname</div>
+                </div>
+                <div class="UserAccountPage-ProfileSection">
+                    <div class="ProfileStat">
+                        <div>6</div>
+                        <div>posts</div>
+                    </div>
+                    <div class="ProfileStat">
+                        <div>5</div>
+                        <div>followers</div>
+                    </div>
+                    <div class="ProfileStat">
+                        <div>5</div>
+                        <div>following</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="UserAccountPage-BioSection">
+            <p><strong>@ViewBag.dateOfBirth</strong></p>
+            <br />
+            <p>@ViewBag.bio</p>
+        </div>
+        <div class="UserAccountPage-BioSection bioEdit">
+            <a class="childBioEdit" href="#">Follow</a>
+            <a class="childBioEdit" href="#">Message</a>
+        </div>
+        @if (Model != null)
+        {
+            <div class="homepage-PhotoSection">
+                @foreach (var post in Model)
+                {
+                    <div class="forEach-AlignClass">
+                        <div class="PhotoSection-Child">
+                            <img src="@post.PhotoPath" alt="Post Photo" class="PhotoSectionImg" />
+                        </div>
+                        <div>@post.PostCaption</div>
+                    </div>
+                }
+            </div>
+        }
+        <div class="fixed-bottom" style="margin: 0px 0px 25px 0px;">
+            <div class="bottom-buttons">
+                <a class="feed" href="@Url.Action("Feed", "Account")">Following Feed</a>
+                <a class="search" href="@Url.Action("SearchProfile", "Account")">Search Profile</a>
+                <a class="add-post" href="@Url.Action("AddPost", "Account")">Add Post</a>
+                <a class="home" href="@Url.Action("UserAccountPage", "Account")">Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+

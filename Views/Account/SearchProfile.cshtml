@@ -52,10 +52,10 @@
                                             <div class="profile-info">
                                                 <h3>${post.fullname || 'No Name'}</h3>
                                                 <p>${post.username || 'No Username'}</p>
-                                                <a href="#">View Profile</a>
+                                                    <a href="@Url.Action("SearchUserHomePage", "Account")?Id=${post.id}">View Profile</a>
                                             </div>
                                         </div>
-                                    `;
+                                      `;
                     resultsContainer.innerHTML += profileCard;
                 });
             },

@@ -641,5 +641,50 @@ namespace Social_Media_Project.Controllers
             }
         }
         #endregion
+
+        #region "Search Profile Homepage"
+        public async Task<IActionResult> SearchUserHomePage(string Id = "")
+        {
+            string Message = "";
+            try
+            {
+                string url = baseUrl + $"api/AccountAPI/GetUserBioDetails?Id={Id}";
+                HttpResponseMessage res = await _httpClient.GetAsync(url);
+                if (res.IsSuccessStatusCode)
+                {
+                    string resBody = await res.Content.ReadAsStringAsync();
+                    dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                    ViewBag.fullname = resData.fullname;
+                    ViewBag.profilePhotoPath = resData.profilePhotoPath;
+                    ViewBag.bio = resData.bio;
+                    ViewBag.dateOfBirth = resData.dateOfBirth;
+                    ViewBag.username = resData.username;
+
+                    string purl = baseUrl + "api/AccountAPI/GetUserPostDetails";
+                    string pfullUrl = $"{purl}?Id={Id}";
+                    HttpResponseMessage pres = await _httpClient.GetAsync(pfullUrl);
+                    if (pres.IsSuccessStatusCode)
+                    {
+                        string presBody = await pres.Content.ReadAsStringAsync();
+                        List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(presBody);
+                        return View(lstData);
+                    }
+                    else
+                    {
+                        return BadRequest("Error fetching data from the API.");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Error in Fetching Data");
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return View("Error");
+            }
+        }
+        #endregion
     }
 }
