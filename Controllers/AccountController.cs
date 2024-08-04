@@ -501,11 +501,9 @@ namespace Social_Media_Project.Controllers
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             var claims = result.Principal.Identities.FirstOrDefault().Claims;
-
-
             var nameClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
             var emailClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-            //return Json(claims);
+
             if (!result.Succeeded)
             {
                 return Redirect(returnUrl);
@@ -523,7 +521,24 @@ namespace Social_Media_Project.Controllers
                 if (res.IsSuccessStatusCode)
                 {
                     string resBody = await res.Content.ReadAsStringAsync();
-                    return RedirectToAction("UserAccountPage", "Account");
+                    dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                    string message = resData.msg.ToString();
+                    int userId = resData.id;
+                    if (resData.msg == "Email already exists.")
+                    {
+                        TempData["errorMessage"] = message;
+                        TempData.Keep("errorMessage");
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        TempData["successMessage"] = message;
+                        TempData.Keep("successMessage");
+                        _sessionService.SetInt32("UserId", userId);
+                        string hdnData = "Login123";
+                        _sessionService.SetString("hdnData", hdnData);
+                        return RedirectToAction("UpdateGoogleForm", "Account");
+                    }
                 }
                 else
                 {
@@ -533,6 +548,97 @@ namespace Social_Media_Project.Controllers
 
             }
 
+        }
+        #endregion
+
+        #region "Google Response Update Form"
+        [HttpGet, HttpPost]
+        public async Task<IActionResult> UpdateGoogleForm(Account pAccount, IFormFile ProfilePhoto)
+        {
+            string Message = "";
+            try
+            {
+                var Id = _sessionService.GetInt32("UserId");
+                var Data = _sessionService.GetString("hdnData");
+                if (Id != null && Data != null)
+                {
+                    if (pAccount.hdnId == null)
+                    {
+                        string UserId = Convert.ToString(Id);
+                        string url = baseUrl + $"api/GoogleAuth/GetListUpdate/?id={UserId}";
+                        HttpResponseMessage res = await _httpClient.GetAsync(url);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            Account Obj = JsonConvert.DeserializeObject<Account>(resBody);
+                            return View(Obj);
+                        }
+                        else
+                        {
+                            return BadRequest("Error in Fetching Data");
+                        }
+                    }
+                    else
+                    {
+                        if (ProfilePhoto != null)
+                        {
+                            string FileName = Path.GetFileName(ProfilePhoto.FileName);
+                            string FileData = Path.Combine("wwwroot", "images", "UserData");
+                            if (!Directory.Exists(FileData))
+                            {
+                                Directory.CreateDirectory(FileData);
+                            }
+                            string FilePath = Path.Combine(FileData, FileName);
+                            using (var Stream = new FileStream(FilePath, FileMode.Create))
+                            {
+                                await ProfilePhoto.CopyToAsync(Stream);
+                            }
+
+                            pAccount.ProfilePhotoPath = "/images/UserData/" + FileName;
+
+                        }
+                        pAccount.Id = Convert.ToInt32(Id);
+
+                        var pAccountData = new
+                        {
+                            pAccount.hdnId,
+                            pAccount.Id,
+                            pAccount.ProfilePhotoPath,
+                            pAccount.Fullname,
+                            pAccount.DateOfBirth,
+                            pAccount.Phone,
+                            pAccount.Bio,
+                            pAccount.Username
+                        };
+
+                        string JsonObject = JsonConvert.SerializeObject(pAccountData);
+                        StringContent content = new StringContent(JsonObject, Encoding.UTF8, "application/json");
+                        string url = baseUrl + "api/GoogleAuth/PostListUpdate";
+                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            _sessionService.SetString("Username", pAccount.Username);
+                            return RedirectToAction("UserAccountPage", "Account");
+                        }
+                        else
+                        {
+                            return BadRequest("Error in Updating the Data");
+                        }
+                    }
+
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return Ok(Message);
+            }
         }
         #endregion
     }
