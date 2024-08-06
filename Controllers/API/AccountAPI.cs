@@ -11,11 +11,44 @@ namespace Social_Media_Project.Controllers.API
     public class AccountAPI : ControllerBase
     {
         private readonly string _connectionString;
+        private readonly EncryptionHelper _encryptionHelper;
 
-        public AccountAPI(IConfiguration configuration)
+        public AccountAPI(IConfiguration configuration, EncryptionHelper encryptionHelper)
         {
             _connectionString = configuration.GetConnectionString("CustomConnection");
+            _encryptionHelper = encryptionHelper;
         }
+
+
+        #region "Test API"
+        [HttpGet]
+        public IActionResult TestAPI()
+        {
+            string plainTextMessage = "Your test message here";
+            string encryptedMessage = _encryptionHelper.Encrypt(plainTextMessage);
+            return Ok(new { encryptedMsg = encryptedMessage });
+        }
+
+        [HttpPost]
+        public IActionResult DecryptMessage([FromBody] Decrypted request)
+        {
+            if (string.IsNullOrEmpty(request.EncryptedMsg))
+            {
+                return BadRequest(new { error = "EncryptedMsg field is required." });
+            }
+
+            try
+            {
+                string decryptedMessage = _encryptionHelper.Decrypt(request.EncryptedMsg);
+                return Ok(new { decryptedMessage });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = "Decryption failed", message = ex.Message });
+            }
+        }
+
+        #endregion
 
         #region "SignUp Get/Post"
 

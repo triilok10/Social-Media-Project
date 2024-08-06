@@ -1,7 +1,7 @@
-using Social_Media_Project.AppCode;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.DependencyInjection;
+using Social_Media_Project.AppCode;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +11,10 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 
+// Register EncryptionHelper as a singleton
+builder.Services.AddSingleton<EncryptionHelper>();
+
+// Configure session management
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(5);
@@ -34,10 +38,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
-
-var configuration = builder.Configuration;
-string connectionString = "data source=ACER\\CYNOSUREDBS; Initial Catalog = SocialMediaProject; Integrated Security = true; TrustServerCertificate = true";
-configuration["ConnectionStrings:CustomConnection"] = connectionString;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
