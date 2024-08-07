@@ -24,9 +24,7 @@ namespace Social_Media_Project.Controllers.API
         [HttpGet]
         public IActionResult TestAPI()
         {
-            string plainTextMessage = "Your test message here";
-            string abc = "scbhdsbhjdbvhjdfvb nc jhcdsdjejkfvejvhejrvhndbvhdbvhjdbmcnv nf dhvb";
-            string modifyPlain = abc.Reverse().ToString();
+            string plainTextMessage = "Your Test Message here.";
             string encryptedMessage = _encryptionHelper.Encrypt(plainTextMessage);
             return Ok(new { encryptedMsg = encryptedMessage, plain = plainTextMessage });
         }

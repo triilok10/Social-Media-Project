@@ -1,0 +1,249 @@
+﻿@model Social_Media_Project.Models.Account
+@{
+    ViewData["Title"] = "UpdateProfile";
+}
+<link href="~/js/toastr.min.css" rel="stylesheet" />
+
+@if (TempData["errorMessage"] != null)
+{
+    <script>
+        toastr.error("@TempData["errorMessage"]");
+    </script>
+}
+@if (TempData["successMessage"] != null)
+{
+    <script>
+        toastr.success("@TempData["successMessage"]");
+    </script>
+}
+<style>
+
+
+
+    .center-mobile-Fix {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Form box */
+    .form-box {
+        width: 100%;
+    }
+
+    .form-title {
+        text-align: center;
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* Form rows */
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+        .form-group:last-child {
+            margin-right: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+            text-align: start;
+        }
+
+    .input-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    /* Image preview */
+    .image-preview-align {
+        text-align: center;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .image-preview {
+        width: 300px;
+        height: 300px;
+        display: none;
+        border: 1px solid black;
+        padding: 2px;
+        border-radius: 50%;
+    }
+
+    /* Submit button */
+    .btn-submit {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #4CAF50;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+
+    .alignMaanage {
+        width: 600px;
+        width: 100%;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+<div class="center-mobile-Fix" id="SignUpForm">
+    <div class="alignMaanage">
+        <div class="form-box">
+            <h2 class="form-title">Update Profile</h2>
+            <form asp-controller="Account" asp-action="UpdateGoogleForm" method="post" id="profileUpdateForm" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Fullname">Full Name</label>
+                        <input asp-for="Fullname" id="fullNameInput" name="Fullname" class="input-control" placeholder="Full Name" required>
+                        <input asp-for="hdnId" type="hidden" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email">Email Address</label>
+                        <input asp-for="Email" id="emailInput" name="Email" class="input-control" placeholder="Email Address" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Phone">Mobile Number</label>
+                        <input asp-for="Phone" id="phoneInput" name="Phone" class="input-control" placeholder="Mobile Number" required>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Username">Username</label>
+                        <input asp-for="Username" id="usernameInput" name="Username" class="input-control" placeholder="Username" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ProfilePhoto">Add Profile Photo</label>
+                        <input type="file" asp-for="ProfilePhoto" id="profilePhotoInput" name="ProfilePhoto" class="input-control" onchange="previewProfilePhoto(event)">
+                    </div>
+                    <div class="form-group">
+                        <label for="DateOfBirth">Date Of Birth</label>
+                        <input type="date" asp-for="DateOfBirth" id="dobInput" name="DateOfBirth" class="input-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group image-preview-align">
+                        <img id="previewImage" class="image-preview" src="#" alt="Preview">
+                    </div>
+                </div>
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="Bio">Bio</label>
+                        <textarea asp-for="Bio" id="bioInput" name="Bio" rows="4" class="input-control" placeholder="Describe yourself"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Toastr options
+
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Form validation
+        $("#SignUpForm").validate({
+            rules: {
+                Phone: { required: true },
+                Email: { required: true, email: true },
+                Fullname: { required: true },
+                Username: { required: true },
+                Password: { required: true, minlength: 6 },
+                ConfirmPassword: { required: true, equalTo: "#Password" }
+            },
+            messages: {
+                Phone: { required: "Please enter your phone number." },
+                Email: { required: "Please enter your email address.", email: "Please enter a valid email address." },
+                Fullname: { required: "Please enter your full name." },
+                Username: { required: "Please enter a username." },
+                Password: { required: "Please enter a password.", minlength: "Your password must be at least 6 characters long." },
+                ConfirmPassword: { required: "Please confirm your password.", equalTo: "Passwords do not match." }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.signup-form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            }
+        });
+    });
+
+    function previewProfilePhoto(event) {
+        var input = event.target;
+        var preview = document.getElementById('previewImage');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+
+
+
+

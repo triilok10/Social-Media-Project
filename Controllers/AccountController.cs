@@ -686,5 +686,24 @@ namespace Social_Media_Project.Controllers
             }
         }
         #endregion
+
+        #region "UpdateProfile"
+        public IActionResult UpdateProfile()
+        {
+            string Message = "";
+            bool res = false;
+            try
+            {
+                return View();
+                res = true;
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                res = false;
+                return View("Error");
+            }
+        }
+        #endregion
     }
 }
