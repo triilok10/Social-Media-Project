@@ -38,6 +38,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+var configuration = builder.Configuration;
+string connectionString = "data source=ACER\\CYNOSUREDBS; Initial Catalog = SocialMediaProject; Integrated Security = true; TrustServerCertificate=true";
+configuration["ConnectionStrings:CustomConnection"] = connectionString;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
