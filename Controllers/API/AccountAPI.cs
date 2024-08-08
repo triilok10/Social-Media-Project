@@ -415,5 +415,48 @@ namespace Social_Media_Project.Controllers.API
         //    return Ok();
         //}
         //#endregion
+
+
+        #region "UpdateUserProfile"
+        [HttpGet]
+        public IActionResult UpdateUserProfile(string Id = "")
+        {
+            string Message = "";
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", Id);
+                    cmd.Parameters.AddWithValue("@Mode", 1);
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            MediaPost obj = new MediaPost
+                            {
+                                Fullname = Convert.ToString(rdr["Fullname"]),
+                                Bio = Convert.ToString(rdr["ProfileBio"]),
+                                DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]),
+                                ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]),
+                                Mobile = Convert.ToString(rdr["Mobile"]),
+                                Email = Convert.ToString(rdr["Email"]),
+                                Username = Convert.ToString(rdr["Username"])
+                            };
+                            return Ok(obj);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+            }
+            return Ok();
+        }
+        #endregion
     }
 }

@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Security.Principal;
 using System.Text;
 using System.Security.Claims;
+using NuGet.Protocol.Plugins;
 
 namespace Social_Media_Project.Controllers
 {
@@ -688,21 +689,45 @@ namespace Social_Media_Project.Controllers
         #endregion
 
         #region "UpdateProfile"
-        public IActionResult UpdateProfile()
+        public async Task<IActionResult> UpdateProfile(string HdnId = "")
         {
             string Message = "";
-            bool res = false;
             try
             {
-                return View();
-                res = true;
+                var UserId = _sessionService.GetInt32("UserId");
+                var UserName = _sessionService.GetString("Username");
+                if (UserId != null && UserName != null)
+                {
+                    if (HdnId == "1")
+                    {
+                        string Url = baseUrl + $"api/AccountAPI/UpdateUserProfile?Id={UserId}";
+
+                        HttpResponseMessage res = await _httpClient.GetAsync(Url);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            MediaPost resData = JsonConvert.DeserializeObject<MediaPost>(resBody);
+                            return View(resData);
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                    return View();
+
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             catch (Exception ex)
             {
                 Message = ex.Message;
-                res = false;
                 return View("Error");
             }
+
         }
         #endregion
     }

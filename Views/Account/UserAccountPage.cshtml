@@ -114,8 +114,8 @@
             <p>@ViewBag.bio</p>
         </div>
         <div class="UserAccountPage-BioSection bioEdit">
-            <a class="childBioEdit" href="#">Edit Profile</a>
-            <a class="childBioEdit" href="#">Share Profile</a>
+            <a class="childBioEdit" href="@Url.Action("UpdateProfile","Account")?HdnId=1">Edit Profile</a>
+            <a class="childBioEdit" href="@Url.Action("","")">Share Profile</a>
         </div>
         @if (Model != null)
         {

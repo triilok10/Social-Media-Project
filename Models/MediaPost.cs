@@ -33,5 +33,9 @@
 
         //Post Caption
         public string? PostCaption { get; set; }
+        //Mobile
+        public string? Mobile { get; set; }
+        //Email
+        public string? Email { get; set; }
     }
 }
