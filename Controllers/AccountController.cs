@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Social_Media_Project.AppCode;
 using Social_Media_Project.Models;
-using System.Drawing;
-using System.Security.Principal;
 using System.Text;
 using System.Security.Claims;
-using NuGet.Protocol.Plugins;
+using System.Text.Unicode;
 
 namespace Social_Media_Project.Controllers
 {
@@ -689,19 +686,20 @@ namespace Social_Media_Project.Controllers
         #endregion
 
         #region "UpdateProfile"
-        public async Task<IActionResult> UpdateProfile(string HdnId = "")
+        [HttpGet, HttpPost]
+        public async Task<IActionResult> UpdateProfile(MediaPost objMediaPost, IFormFile ProfilePhoto, string HdnView = "")
         {
             string Message = "";
             try
             {
+
                 var UserId = _sessionService.GetInt32("UserId");
                 var UserName = _sessionService.GetString("Username");
                 if (UserId != null && UserName != null)
                 {
-                    if (HdnId == "1")
+                    if (HdnView == "1")
                     {
                         string Url = baseUrl + $"api/AccountAPI/UpdateUserProfile?Id={UserId}";
-
                         HttpResponseMessage res = await _httpClient.GetAsync(Url);
                         if (res.IsSuccessStatusCode)
                         {
@@ -709,17 +707,72 @@ namespace Social_Media_Project.Controllers
                             MediaPost resData = JsonConvert.DeserializeObject<MediaPost>(resBody);
                             return View(resData);
                         }
+                        else
+                        {
+                            return BadRequest("Error in updating the Data here.");
+                        }
                     }
                     else
                     {
+                        if (objMediaPost.hdnId == 1)
+                        {
+                            if (ProfilePhoto != null)
+                            {
+                                string Filename = Path.GetFileName(ProfilePhoto.FileName);
+                                string FileData = Path.Combine("wwwroot", "images", "UserData");
 
+                                if (!Directory.Exists(FileData))
+                                {
+                                    Directory.CreateDirectory(FileData);
+                                }
+                                string FilePath = Path.Combine(FileData, Filename);
+                                using (var Stream = new FileStream(FilePath, FileMode.Create))
+                                {
+                                    await ProfilePhoto.CopyToAsync(Stream);
+                                }
+                                objMediaPost.ProfilePhotoPath = "/images/UserData/" + Filename;
+                            }
+                            objMediaPost.Id = UserId;
+                            var UpdateData = new
+                            {
+                                objMediaPost.Id,
+                                objMediaPost.ProfilePhotoPath,
+                                objMediaPost.Bio,
+                                objMediaPost.Mobile,
+                                objMediaPost.Fullname,
+                                objMediaPost.DateOfBirth
+                            };
+
+                            string JsonContent = JsonConvert.SerializeObject(UpdateData);
+                            StringContent content = new StringContent(JsonContent, Encoding.UTF8, "application/json");
+
+                            string PostUrl = baseUrl + "api/AccountAPI/UpdateProfilePost";
+                            HttpResponseMessage res = await _httpClient.PostAsync(PostUrl, content);
+                            if (res.IsSuccessStatusCode)
+                            {
+                                string resBody = await res.Content.ReadAsStringAsync();
+                                dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                                Message = resData.msg;
+                                TempData["successMessage"] = Message;
+                                TempData.Keep("successMessage");
+
+                                return RedirectToAction("UserAccountPage", "Account");
+                            }
+                            else
+                            {
+                                return BadRequest("Unable to update the Data, Please check the issue.");
+                            }
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
-                    return View();
-
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("UserAccountPage", "Account");
+
                 }
             }
             catch (Exception ex)

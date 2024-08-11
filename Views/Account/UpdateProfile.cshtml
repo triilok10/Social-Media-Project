@@ -117,6 +117,7 @@
 <div class="center-mobile-Fix" id="SignUpForm">
     <div class="alignMaanage">
         <div class="form-box">
+            <a href="@Url.Action("UserAccountPage", "Account")">Back</a>
             <h2 class="form-title">Update Profile</h2>
             <form asp-controller="Account" asp-action="UpdateProfile" method="post" id="profileUpdateForm" enctype="multipart/form-data">
                 <div class="form-row">
@@ -127,23 +128,24 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Email">Email Address</label>
-                        <input asp-for="Email" id="emailInput" name="Email" class="input-control" placeholder="Email Address" readonly>
+                        <input asp-for="Email" id="emailInput" name="Email" class="input-control" placeholder="Email Address" readonly style="background-color: beige;">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label asp-for="Mobile">Mobile Number</label>
-                        <input asp-for="Mobile" id="phoneInput" name="Phone" class="input-control" placeholder="Mobile Number" required>
+                        <input asp-for="Mobile" id="phoneInput" name="Mobile" class="input-control" placeholder="Mobile Number" required>
                     </div>
                     <div class="form-group">
                         <label asp-for="Username">Username</label>
-                        <input asp-for="Username" id="usernameInput" name="Username" class="input-control" placeholder="Username" readonly>
+                        <input asp-for="Username" id="usernameInput" name="Username" class="input-control" placeholder="Username" readonly style="background-color: beige;">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="ProfilePhoto">Add Profile Photo</label>
                         <input type="file" asp-for="ProfilePhoto" id="profilePhotoInput" name="ProfilePhoto" class="input-control" onchange="previewProfilePhoto(event)">
+                        <input type="hidden" asp-for="ProfilePhotoPath" value="@Model.ProfilePhotoPath" />
                     </div>
                     <div class="form-group">
                         <label for="DateOfBirth">Date Of Birth</label>
@@ -154,7 +156,7 @@
                     <div class="form-group image-preview-align">
                         @if (Model.ProfilePhotoPath != null)
                         {
-                            <img src="@Model.ProfilePhotoPath" style="width:250px; border: 1px solid black; padding: 2px; box-shadow: 1px 1px 13px 2px" />
+                            <img src="@Model.ProfilePhotoPath" style="width:250px; border: 1px solid black; padding: 2px; box-shadow: 1px 1px 13px 2px" class="ProfilePhotoImg" />
                         }
                         <img id="previewImage" class="image-preview" src="#" alt="Preview">
                     </div>
@@ -199,35 +201,31 @@
         };
 
         // Form validation
-        $("#SignUpForm").validate({
-            rules: {
-                Phone: { required: true },
-                Email: { required: true, email: true },
-                Fullname: { required: true },
-                Username: { required: true },
-                Password: { required: true, minlength: 6 },
-                ConfirmPassword: { required: true, equalTo: "#Password" }
-            },
-            messages: {
-                Phone: { required: "Please enter your phone number." },
-                Email: { required: "Please enter your email address.", email: "Please enter a valid email address." },
-                Fullname: { required: "Please enter your full name." },
-                Username: { required: "Please enter a username." },
-                Password: { required: "Please enter a password.", minlength: "Your password must be at least 6 characters long." },
-                ConfirmPassword: { required: "Please confirm your password.", equalTo: "Passwords do not match." }
-            },
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.signup-form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid').removeClass('is-valid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid').addClass('is-valid');
-            }
-        });
+        // $("#SignUpForm").validate({
+        //     rules: {
+        //         Phone: { required: true },
+        //         Fullname: { required: true },
+        //         Password: { required: true, minlength: 6 },
+        //         ConfirmPassword: { required: true, equalTo: "#Password" }
+        //     },
+        //     messages: {
+        //         Phone: { required: "Please enter your phone number." },
+        //         Fullname: { required: "Please enter your full name." },
+        //         Password: { required: "Please enter a password.", minlength: "Your password must be at least 6 characters long." },
+        //         ConfirmPassword: { required: "Please confirm your password.", equalTo: "Passwords do not match." }
+        //     },
+        //     errorElement: 'span',
+        //     errorPlacement: function (error, element) {
+        //         error.addClass('invalid-feedback');
+        //         element.closest('.signup-form-group').append(error);
+        //     },
+        //     highlight: function (element, errorClass, validClass) {
+        //         $(element).addClass('is-invalid').removeClass('is-valid');
+        //     },
+        //     unhighlight: function (element, errorClass, validClass) {
+        //         $(element).removeClass('is-invalid').addClass('is-valid');
+        //     }
+        // });
     });
 
     function previewProfilePhoto(event) {
@@ -243,6 +241,11 @@
             }
 
             reader.readAsDataURL(input.files[0]);
+        }
+
+        var inputData = document.getElementById('profilePhotoInput');
+        if (inputData != null) {
+            $(".ProfilePhotoImg").addClass('d-none');
         }
     }
 </script>

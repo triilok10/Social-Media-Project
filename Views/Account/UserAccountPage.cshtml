@@ -102,6 +102,9 @@
                         <a href="#download-profile-data" onclick="generatePDF();" class="text-decoration-none">Download Profile Data</a>
                     </li>
                     <li class="listData">
+                        <a href="@Url.Action("","")" class="text-decoration-none">Delete Account</a>
+                    </li>
+                    <li class="listData">
                         <a href="@Url.Action("Logout","Account")" class="text-decoration-none">Logout</a>
                     </li>
                 </ul>
@@ -114,7 +117,7 @@
             <p>@ViewBag.bio</p>
         </div>
         <div class="UserAccountPage-BioSection bioEdit">
-            <a class="childBioEdit" href="@Url.Action("UpdateProfile","Account")?HdnId=1">Edit Profile</a>
+            <a class="childBioEdit" href="@Url.Action("UpdateProfile","Account")?HdnView=1">Edit Profile</a>
             <a class="childBioEdit" href="@Url.Action("","")">Share Profile</a>
         </div>
         @if (Model != null)

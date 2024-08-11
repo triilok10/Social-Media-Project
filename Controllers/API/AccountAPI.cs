@@ -457,6 +457,42 @@ namespace Social_Media_Project.Controllers.API
             }
             return Ok();
         }
+
+        [HttpPost]
+        public IActionResult UpdateProfilePost([FromBody] MediaPost objMediaPost)
+        {
+            string Message = "";
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("UpdateProfile", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", objMediaPost.Id);
+                    cmd.Parameters.AddWithValue("@ProfilePhotoPath", objMediaPost.ProfilePhotoPath);
+                    cmd.Parameters.AddWithValue("@Bio", objMediaPost.Bio);
+                    cmd.Parameters.AddWithValue("@Mobile", objMediaPost.Mobile);
+                    cmd.Parameters.AddWithValue("@Fullname", objMediaPost.Fullname);
+                    cmd.Parameters.AddWithValue("@DateOfBirth", objMediaPost.DateOfBirth);
+                    SqlParameter message = new SqlParameter("@Message", SqlDbType.VarChar, 200);
+                    message.Direction = ParameterDirection.Output;
+
+                    cmd.Parameters.Add(message);
+
+                    cmd.ExecuteNonQuery();
+                    Message = cmd.Parameters["@Message"].Value.ToString();
+
+                    return Ok(new { msg = Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return Ok(new { errmsg = Message });
+            }
+
+        }
         #endregion
     }
 }
