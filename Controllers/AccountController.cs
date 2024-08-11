@@ -449,20 +449,36 @@ namespace Social_Media_Project.Controllers
                 var userId = _sessionService.GetInt32("UserId");
                 if (username != null && userId != null)
                 {
-                    string url = baseUrl + "api/AccountAPI/FeedData";
-                    HttpResponseMessage res = await _httpClient.GetAsync(url);
+                    string url = baseUrl + "api/AccountAPI/GetUserBioDetails";
+                    string fullUrl = $"{url}?Id={userId}";
+                    HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
                     if (res.IsSuccessStatusCode)
                     {
                         string resBody = await res.Content.ReadAsStringAsync();
-                        List<MediaPost> lstPost = JsonConvert.DeserializeObject<List<MediaPost>>(resBody);
-                        return View(lstPost);
+                        dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+
+                        ViewBag.profilePhotoPath = resData.profilePhotoPath;
+
+                        ViewBag.username = resData.username;
+                        string urll = baseUrl + "api/AccountAPI/FeedData";
+                        HttpResponseMessage ress = await _httpClient.GetAsync(urll);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBodyy = await ress.Content.ReadAsStringAsync();
+                            List<MediaPost> lstPost = JsonConvert.DeserializeObject<List<MediaPost>>(resBodyy);
+                            return View(lstPost);
+                        }
+                        else
+                        {
+                            Message = "Error in Fetching Data";
+                            TempData["errorMessage"] = Message;
+                            TempData.Keep("errorMessage");
+                            return View();
+                        }
                     }
                     else
                     {
-                        Message = "Error in Fetching Data";
-                        TempData["errorMessage"] = Message;
-                        TempData.Keep("errorMessage");
-                        return View();
+                        return BadRequest("Error in Calling the API to Fetch the Data");
                     }
 
                 }

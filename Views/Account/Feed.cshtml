@@ -31,12 +31,25 @@
             </div>
             <img src="@i.PhotoPath" class="card-img-top" alt="Post Image">
             <div class="card-body">
-                <h5 class="card-title">@i.Username</h5>
-                <p class="card-text">@i.PostCaption</p>
-                <div class="d-flex justify-content-between">
-                    <button class="btn btn-outline-primary">Like</button>
-                    <button class="btn btn-outline-secondary">Comment</button>
+                <div class=" d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">@i.Username</h5>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary">Like</button>
+                    </div>
                 </div>
+                <p class="card-text">@i.PostCaption</p>
+                <div class="d-flex justify-content-between" style="padding: 5px; box-shadow: 1px 1px 80px 2px gray; margin: 10px;">
+                    <div style="10%">
+                        <img src="@ViewBag.profilePhotoPath" alt="Profile Photo" style="height: 48px; width: 48px; padding: 2px; border-radius: 50%; border:1px solid black" />
+                    </div>
+                    <div style="width:70%">
+                        <input type="text" placeholder=" Add Comment" style="border:none; padding:3px; height: 50px;  width:100%" />
+                    </div>
+                    <div>   <button class="btn btn-outline-secondary">Comment</button></div>
+                </div>
+
             </div>
         </div>
     }
