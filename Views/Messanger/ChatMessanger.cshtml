@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "ChatMessanger";
+}
+
+<div class="chat-container">
+    <h1 class="dynamic-heading">ChatMessanger</h1>
+    <div class="chat-window">
+        <div class="message sent">
+            <div class="message-content">Hello! How are you?</div>
+            <div class="profile-pic">A</div>
+        </div>
+        <div class="message received">
+            <div class="profile-pic">B</div>
+            <div class="message-content">I'm good, thanks! How about you?</div>
+        </div>
+        <div class="message sent">
+            <div class="message-content">I'm doing well. What are you up to?</div>
+            <div class="profile-pic">A</div>
+        </div>
+        <div class="message received">
+            <div class="profile-pic">B</div>
+            <div class="message-content">Just working on a project.</div>
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" placeholder="Type a message..." />
+        <button>Send</button>
+    </div>
+</div>
+
+<style>
+    .chat-container {
+        width: 800px;
+        height: 100vh;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dynamic-heading {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-size: 2em;
+        font-weight: bold;
+        background: linear-gradient(270deg, #ff6f61, #ff8a50, #ffb347, #85e085, #3c8dbc, #b92b27);
+        background-size: 1200% 1200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient-animation 10s ease infinite;
+        margin-bottom: 20px;
+    }
+
+    @@keyframes gradient-animation {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .chat-window {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+    }
+
+    .message {
+        display: flex;
+        margin-bottom: 15px;
+        align-items: flex-start;
+    }
+
+    .message.sent {
+        justify-content: flex-end;
+    }
+
+    .message.received {
+        justify-content: flex-start;
+    }
+
+    .message .profile-pic {
+        width: 40px;
+        height: 40px;
+        background-color: #666;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+    .message.sent .profile-pic {
+        margin-left: 10px;
+        margin-right: 0;
+        order: 2;
+    }
+
+    .message.received .profile-pic {
+        margin-right: 10px;
+        margin-left: 0;
+    }
+
+    .message .message-content {
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+        color: #fff;
+    }
+
+    .message.sent .message-content {
+        background-color: #ff6f61; /* Red/Pink background for sent messages */
+        align-self: flex-end;
+        order: 1;
+    }
+
+    .message.received .message-content {
+        background-color: #007bff; /* Blue background for received messages */
+        align-self: flex-start;
+    }
+
+    .chat-input {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        background-color: #fff;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .chat-input input[type="text"] {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        font-size: 16px;
+        outline: none;
+    }
+
+    .chat-input button {
+        margin-left: 10px;
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .chat-input button:hover {
+        background-color: #0056b3;
+    }
+</style>
