@@ -164,7 +164,7 @@ namespace Social_Media_Project.Controllers.API
                             objAccount.Fullname = Convert.ToString(rdr["FullName"]);
                             objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
                             objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
-                            objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
+                            objAccount.DateOfBirth =  Convert.ToDateTime(rdr["DateOfBirth"]);
                             objAccount.Username = Convert.ToString(rdr["Username"]);
                         }
                     }

@@ -1,33 +1,6 @@
 ﻿@{
     ViewData["Title"] = "ChatMessanger";
 }
-
-<div class="chat-container">
-    <h1 class="dynamic-heading">ChatMessanger</h1>
-    <div class="chat-window">
-        <div class="message sent">
-            <div class="message-content">Hello! How are you?</div>
-            <div class="profile-pic">A</div>
-        </div>
-        <div class="message received">
-            <div class="profile-pic">B</div>
-            <div class="message-content">I'm good, thanks! How about you?</div>
-        </div>
-        <div class="message sent">
-            <div class="message-content">I'm doing well. What are you up to?</div>
-            <div class="profile-pic">A</div>
-        </div>
-        <div class="message received">
-            <div class="profile-pic">B</div>
-            <div class="message-content">Just working on a project.</div>
-        </div>
-    </div>
-    <div class="chat-input">
-        <input type="text" placeholder="Type a message..." />
-        <button>Send</button>
-    </div>
-</div>
-
 <style>
     .chat-container {
         width: 800px;
@@ -59,9 +32,11 @@
         0% {
             background-position: 0% 50%;
         }
+
         50% {
             background-position: 100% 50%;
         }
+
         100% {
             background-position: 0% 50%;
         }
@@ -83,56 +58,56 @@
         align-items: flex-start;
     }
 
-    .message.sent {
-        justify-content: flex-end;
-    }
+        .message.sent {
+            justify-content: flex-end;
+        }
 
-    .message.received {
-        justify-content: flex-start;
-    }
+        .message.received {
+            justify-content: flex-start;
+        }
 
-    .message .profile-pic {
-        width: 40px;
-        height: 40px;
-        background-color: #666;
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        margin-left: 10px;
-    }
+        .message .profile-pic {
+            width: 40px;
+            height: 40px;
+            background-color: #666;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 10px;
+        }
 
-    .message.sent .profile-pic {
-        margin-left: 10px;
-        margin-right: 0;
-        order: 2;
-    }
+        .message.sent .profile-pic {
+            margin-left: 10px;
+            margin-right: 0;
+            order: 2;
+        }
 
-    .message.received .profile-pic {
-        margin-right: 10px;
-        margin-left: 0;
-    }
+        .message.received .profile-pic {
+            margin-right: 10px;
+            margin-left: 0;
+        }
 
-    .message .message-content {
-        max-width: 70%;
-        padding: 10px;
-        border-radius: 8px;
-        font-family: Arial, sans-serif;
-        color: #fff;
-    }
+        .message .message-content {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
 
-    .message.sent .message-content {
-        background-color: #ff6f61; /* Red/Pink background for sent messages */
-        align-self: flex-end;
-        order: 1;
-    }
+        .message.sent .message-content {
+            background-color: #ff6f61; /* Red/Pink background for sent messages */
+            align-self: flex-end;
+            order: 1;
+        }
 
-    .message.received .message-content {
-        background-color: #007bff; /* Blue background for received messages */
-        align-self: flex-start;
-    }
+        .message.received .message-content {
+            background-color: #007bff; /* Blue background for received messages */
+            align-self: flex-start;
+        }
 
     .chat-input {
         display: flex;
@@ -143,27 +118,112 @@
         border-radius: 0 0 8px 8px;
     }
 
-    .chat-input input[type="text"] {
-        flex-grow: 1;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        font-size: 16px;
-        outline: none;
-    }
+        .chat-input input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+        }
 
-    .chat-input button {
-        margin-left: 10px;
-        padding: 10px 20px;
-        border: none;
-        background-color: #007bff;
-        color: #fff;
-        border-radius: 20px;
-        font-size: 16px;
-        cursor: pointer;
-    }
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-    .chat-input button:hover {
-        background-color: #0056b3;
-    }
+            .chat-input button:hover {
+                background-color: #0056b3;
+            }
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging.js"></script>
+
+<div class="chat-container">
+    <h1 class="dynamic-heading">ChatMessenger</h1>
+    <div class="chat-window">
+       
+    </div>
+    <div class="chat-input">
+        <input type="text" placeholder="Type a message..." />
+        <button>Send</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+   
+    firebase.initializeApp(firebaseConfig);
+
+    const messaging = firebase.messaging();
+
+    
+    messaging.requestPermission()
+        .then(() => messaging.getToken())
+        .then((token) => {
+            console.log('FCM Token:', token);
+           
+        })
+        .catch((err) => {
+            console.error('Permission denied', err);
+        });
+
+    
+    messaging.onMessage((payload) => {
+        console.log('Message received:', payload);
+        displayMessage(payload.notification.title, payload.notification.body, false); 
+    });
+
+    function displayMessage(user, message, isSent) {
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add("message", isSent ? "sent" : "received");
+
+        const profilePicDiv = document.createElement("div");
+        profilePicDiv.classList.add("profile-pic");
+        profilePicDiv.textContent = user.charAt(0);
+
+        const msgContentDiv = document.createElement("div");
+        msgContentDiv.classList.add("message-content");
+        msgContentDiv.textContent = message;
+
+        msgDiv.appendChild(profilePicDiv);
+        msgDiv.appendChild(msgContentDiv);
+
+        document.querySelector(".chat-window").appendChild(msgDiv);
+    }
+
+    document.querySelector(".chat-input button").addEventListener("click", () => {
+        const message = document.querySelector(".chat-input input[type='text']").value;
+        const recipientUserId = "SomeRecipientUserId"; 
+
+        sendMessageToServer(recipientUserId, message);
+        displayMessage("YourUsername", message, true);
+        document.querySelector(".chat-input input[type='text']").value = '';
+    });
+
+    function sendMessageToServer(recipientUserId, messageContent) {
+        fetch('/api/chat/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ recipientUserId, messageContent })
+        })
+            .then(response => response.json())
+            .catch(err => console.error(err));
+    }
+</script>

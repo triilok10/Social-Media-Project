@@ -1,6 +1,9 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.Extensions.DependencyInjection;
+using Social_Media_Project;
 using Social_Media_Project.AppCode;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +40,17 @@ builder.Services.AddAuthentication(options =>
     options.CallbackPath = "/signin-google";
 });
 
+
+var firebaseConfig = builder.Configuration.GetSection("Firebase");
+var serviceAccountPath = firebaseConfig["ServiceAccountPath"];
+
+FirebaseApp.Create(new AppOptions
+{
+    Credential = GoogleCredential.FromFile(serviceAccountPath)
+});
+
+
+
 var app = builder.Build();
 var configuration = builder.Configuration;
 string connectionString = "data source=ACER\\CYNOSUREDBS; Initial Catalog = SocialMediaProject; Integrated Security = true; TrustServerCertificate=true";
@@ -55,6 +69,7 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
