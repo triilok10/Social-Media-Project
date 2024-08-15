@@ -28,7 +28,7 @@
                 </div>
                 <div class="UserAccountPage-ProfileSection">
                     <div class="ProfileStat">
-                        <div>6</div>
+                        <div>@ViewBag.PostCount</div>
                         <div>posts</div>
                     </div>
                     <div class="ProfileStat">
@@ -124,6 +124,7 @@
             success: function (res) {
                 if (res.isFollowing === true) {
                     $('.FollowingList').text('Following');
+                    window.location.reload();
                 } else {
                     $('.FollowingList').text('Follow');
                 }

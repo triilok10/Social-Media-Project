@@ -44,5 +44,8 @@
         public string? Follower { get; set; }
         //Following
         public string? Following { get; set; }
+
+        //PostCount
+        public string? PostCount { get; set; }
     }
 }

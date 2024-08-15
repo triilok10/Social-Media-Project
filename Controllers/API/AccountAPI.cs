@@ -208,6 +208,7 @@ namespace Social_Media_Project.Controllers.API
                             {
                                 mediaPost.Follower = Convert.ToString(rdr["FollowCount"]);
                                 mediaPost.Following = Convert.ToString(rdr["FollowingCount"]);
+                                mediaPost.PostCount = Convert.ToString(rdr["PostCount"]);
                             }
                         }
                         return Ok(mediaPost);
