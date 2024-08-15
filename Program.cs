@@ -40,16 +40,15 @@ builder.Services.AddAuthentication(options =>
     options.CallbackPath = "/signin-google";
 });
 
-
+// Firebase configuration (for web)
 var firebaseConfig = builder.Configuration.GetSection("Firebase");
 var serviceAccountPath = firebaseConfig["ServiceAccountPath"];
 
+// Initialize FirebaseAdmin for server-side operations (like FCM, Firestore, etc.)
 FirebaseApp.Create(new AppOptions
 {
     Credential = GoogleCredential.FromFile(serviceAccountPath)
 });
-
-
 
 var app = builder.Build();
 var configuration = builder.Configuration;
@@ -69,7 +68,6 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.MapControllerRoute(
     name: "default",

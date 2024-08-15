@@ -4,7 +4,18 @@
 @{
     ViewData["Title"] = "SearchUserHomePage";
 }
-
+@if (ViewBag.errorMessage != null)
+{
+    <script>
+        toastr.error("@ViewBag.errorMessage");
+    </script>
+}
+@if (ViewBag.successMessage != null)
+{
+    <script>
+        toastr.success("@ViewBag.successMessage");
+    </script>
+}
 <div class="fix-AlignHomePage">
     <div style="width:800px;">
         <div style="border: 1px solid #ddd; display: flex; position: relative;">
@@ -21,11 +32,11 @@
                         <div>posts</div>
                     </div>
                     <div class="ProfileStat">
-                        <div>5</div>
+                        <div>@ViewBag.Follower</div>
                         <div>followers</div>
                     </div>
                     <div class="ProfileStat">
-                        <div>5</div>
+                        <div>@ViewBag.Following</div>
                         <div>following</div>
                     </div>
                 </div>
@@ -38,8 +49,8 @@
             <p>@ViewBag.bio</p>
         </div>
         <div class="UserAccountPage-BioSection bioEdit">
-            <a class="childBioEdit" href="#">Follow</a>
-            <a class="childBioEdit" href="#">Message</a>
+            <a class="childBioEdit FollowingList" href="javascript:void(0)" style="color:white" onclick="js_UserFollow('@ViewBag.id','@ViewBag.username');">Follow</a>
+            <a class="childBioEdit" href="javascript:void(0)" style="color:white">Message</a>
         </div>
         @if (Model != null)
         {
@@ -66,3 +77,62 @@
     </div>
 </div>
 
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var id = '@ViewBag.id';
+        var username = '@ViewBag.username';
+
+        checkFollowStatus(id, username);
+    });
+
+    function checkFollowStatus(id, username) {
+        var data = {
+            id: id,
+            hdnUsername: username
+        };
+
+        $.ajax({
+            url: "@Url.Action("CheckFollowStatus", "Account")",
+            type: "POST",
+            cache: false,
+            data: data,
+            success: function (res) {
+                if (res.isFollowing === true) {
+                    $('.FollowingList').text('Following');
+                } else {
+                    $('.FollowingList').text('Follow');
+                }
+            },
+            error: function (res) {
+                console.error('Error checking follow status', res);
+            }
+        });
+    }
+
+    function js_UserFollow(Id, username) {
+        var data = {
+            id: Id,
+            hdnUsername: username
+        };
+
+        $.ajax({
+            url: "@Url.Action("UserFollowup", "Account")",
+            type: "POST",
+            cache: false,
+            data: data,
+            success: function (res) {
+                if (res.isFollowing === true) {
+                    $('.FollowingList').text('Following');
+                } else {
+                    $('.FollowingList').text('Follow');
+                }
+            },
+            error: function (res) {
+                console.error('Error following user', res);
+            }
+        });
+    }
+
+
+</script>

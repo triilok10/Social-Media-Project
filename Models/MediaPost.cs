@@ -37,5 +37,12 @@
         public string? Mobile { get; set; }
         //Email
         public string? Email { get; set; }
+
+        //HdnUsername
+        public string? HdnUsername { get; set; }
+        //Follower 
+        public string? Follower { get; set; }
+        //Following
+        public string? Following { get; set; }
     }
 }

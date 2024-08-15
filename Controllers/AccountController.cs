@@ -281,6 +281,18 @@ namespace Social_Media_Project.Controllers
                         {
                             string presBody = await pres.Content.ReadAsStringAsync();
                             List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(presBody);
+
+                            //Call the API to Get the User Following and Follower
+
+                            string FollowUrl = baseUrl + $"api/AccountAPI/GetFollowingData?Id={userId}";
+                            HttpResponseMessage followRes = await _httpClient.GetAsync(FollowUrl);
+                            if (followRes.IsSuccessStatusCode)
+                            {
+                                string followBody = await followRes.Content.ReadAsStringAsync();
+                                MediaPost obj = JsonConvert.DeserializeObject<MediaPost>(followBody);
+                                ViewBag.Follower = obj.Follower;
+                                ViewBag.Following = obj.Following;
+                            }
                             return View(lstData);
                         }
                         else
@@ -662,36 +674,56 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
-                string url = baseUrl + $"api/AccountAPI/GetUserBioDetails?Id={Id}";
-                HttpResponseMessage res = await _httpClient.GetAsync(url);
-                if (res.IsSuccessStatusCode)
-                {
-                    string resBody = await res.Content.ReadAsStringAsync();
-                    dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
-                    ViewBag.fullname = resData.fullname;
-                    ViewBag.profilePhotoPath = resData.profilePhotoPath;
-                    ViewBag.bio = resData.bio;
-                    ViewBag.dateOfBirth = resData.dateOfBirth;
-                    ViewBag.username = resData.username;
 
-                    string purl = baseUrl + "api/AccountAPI/GetUserPostDetails";
-                    string pfullUrl = $"{purl}?Id={Id}";
-                    HttpResponseMessage pres = await _httpClient.GetAsync(pfullUrl);
-                    if (pres.IsSuccessStatusCode)
+                var UserId = _sessionService.GetInt32("UserId");
+                var Username = _sessionService.GetString("Username");
+                if (UserId != null && Username != null)
+                {
+
+                    string url = baseUrl + $"api/AccountAPI/GetUserBioDetails?Id={Id}";
+                    HttpResponseMessage res = await _httpClient.GetAsync(url);
+                    if (res.IsSuccessStatusCode)
                     {
-                        string presBody = await pres.Content.ReadAsStringAsync();
-                        List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(presBody);
-                        return View(lstData);
+                        string resBody = await res.Content.ReadAsStringAsync();
+                        dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                        ViewBag.fullname = resData.fullname;
+                        ViewBag.profilePhotoPath = resData.profilePhotoPath;
+                        ViewBag.bio = resData.bio;
+                        ViewBag.dateOfBirth = resData.dateOfBirth;
+                        ViewBag.username = resData.username;
+                        ViewBag.id = resData.id;
+
+                        string purl = baseUrl + "api/AccountAPI/GetUserPostDetails";
+                        string pfullUrl = $"{purl}?Id={Id}";
+                        HttpResponseMessage pres = await _httpClient.GetAsync(pfullUrl);
+                        if (pres.IsSuccessStatusCode)
+                        {
+                            string presBody = await pres.Content.ReadAsStringAsync();
+                            List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(presBody);
+                            return View(lstData);
+
+                        }
+                        else
+                        {
+                            return BadRequest("Error fetching data from the API.");
+                        }
+
+
+
                     }
                     else
                     {
-                        return BadRequest("Error fetching data from the API.");
+                        return BadRequest("Error in Fetching Data");
                     }
                 }
                 else
                 {
-                    return BadRequest("Error in Fetching Data");
+                    Message = "Please login!";
+                    TempData["errorMessage"] = Message;
+                    TempData.Keep("errorMessage");
+                    return RedirectToAction("Index", "Home");
                 }
+
             }
             catch (Exception ex)
             {
@@ -798,6 +830,119 @@ namespace Social_Media_Project.Controllers
             }
 
         }
+        #endregion
+
+        #region "UserFollow Code"
+
+        [HttpPost]
+        public async Task<IActionResult> CheckFollowStatus(string Id = "", string hdnUsername = "")
+        {
+            bool isFollowing = false;
+
+            try
+            {
+                var UserId = _sessionService.GetInt32("UserId");
+                var Username = _sessionService.GetString("Username");
+
+                if (UserId != null && Username != null)
+                {
+                    if (!string.IsNullOrEmpty(Id))
+                    {
+                        string url = baseUrl + $"api/AccountAPI/CheckFollowStatus";
+                        MediaPost obj = new MediaPost
+                        {
+                            Username = Username,
+                            Id = Convert.ToInt32(Id),
+                            hdnId = UserId,
+                            HdnUsername = hdnUsername
+                        };
+
+                        var jsonData = JsonConvert.SerializeObject(obj);
+                        StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                            isFollowing = Convert.ToBoolean(resData.isFollowing);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+
+            return Json(new { isFollowing });
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UserFollowup(string Id = "", string hdnUsername = "")
+        {
+            string Message = "";
+            bool response = false;
+            bool isFollowing = false;
+            try
+            {
+
+                var UserId = _sessionService.GetInt32("UserId");
+                var Username = _sessionService.GetString("Username");
+                if (UserId != null && Username != null)
+                {
+                    if (Id != null)
+                    {
+                        string url = baseUrl + $"api/AccountAPI/UserFollowup";
+                        MediaPost obj = new MediaPost();
+                        obj.Username = Username;
+                        obj.Id = Convert.ToInt32(Id);
+                        obj.hdnId = UserId;
+                        obj.HdnUsername = hdnUsername;
+
+
+                        var jsonData = new
+                        {
+                            obj.Username,
+                            obj.Id,
+                            obj.hdnId,
+                            obj.HdnUsername
+                        };
+                        string jsondata = JsonConvert.SerializeObject(jsonData);
+                        StringContent content = new StringContent(jsondata, Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                            response = true;
+                            ViewBag.successMessage = resData.msg;
+                            isFollowing = Convert.ToBoolean(resData.isFollowing);
+                        }
+                    }
+                    else
+                    {
+                        Message = "Please Select the user to Follow";
+                    }
+                }
+                else
+                {
+                    Message = Message;
+                    TempData["errorMessage"] = Message;
+                    TempData.Keep("errorMessage");
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+            }
+            return Json(new { response, isFollowing });
+        }
+
         #endregion
     }
 }

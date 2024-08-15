@@ -13,6 +13,12 @@ namespace Social_Media_Project.Controllers.API
     {
         private readonly IConfiguration _configuration;
 
+
+        public IActionResult Test()
+        {
+            string Message = "Test Ok";
+            return Ok(new { msg = Message });
+        }
         public FirebaseMessagingAPI(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -26,7 +32,7 @@ namespace Social_Media_Project.Controllers.API
             }
         }
 
-        [HttpPost("send")]
+        [HttpPost]
         public async Task<IActionResult> SendMessage([FromBody] ChatMessageRequest request)
         {
             if (string.IsNullOrEmpty(request.RecipientUserId) || string.IsNullOrEmpty(request.MessageContent))

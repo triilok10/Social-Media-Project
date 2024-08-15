@@ -143,6 +143,8 @@ namespace Social_Media_Project.Controllers.API
         #endregion
 
         #region "Get User Home Details"
+
+        #region "GetUserBioDetails"
         [HttpGet]
         public IActionResult GetUserBioDetails(int Id)
         {
@@ -164,8 +166,9 @@ namespace Social_Media_Project.Controllers.API
                             objAccount.Fullname = Convert.ToString(rdr["FullName"]);
                             objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
                             objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
-                            objAccount.DateOfBirth =  Convert.ToDateTime(rdr["DateOfBirth"]);
+                            objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
                             objAccount.Username = Convert.ToString(rdr["Username"]);
+                            objAccount.Id = Convert.ToInt32(rdr["Id"]);
                         }
                     }
                 }
@@ -179,8 +182,57 @@ namespace Social_Media_Project.Controllers.API
 
         }
 
+        #endregion
+
+        #region "GetFollowingData"
+        [HttpGet]
+        public IActionResult GetFollowingData(string Id)
+        {
+            string Message = "";
+            try
+            {
+                if (Id != null)
+                {
+                    MediaPost mediaPost = new MediaPost();
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        SqlCommand cmd = new SqlCommand("usp_FollowGet", con);
+                        con.Open();
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Mode", 3);
+                        cmd.Parameters.AddWithValue("@FollowingId", Id);
+
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            if (rdr.Read())
+                            {
+                                mediaPost.Follower = Convert.ToString(rdr["FollowCount"]);
+                                mediaPost.Following = Convert.ToString(rdr["FollowingCount"]);
+                            }
+                        }
+                        return Ok(mediaPost);
+                    }
+                }
+                else
+                {
+                    Message = "Please select the user Correctly";
+                    return Ok(new { msg = Message });
+                }
 
 
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                return Ok(new { msg = Message });
+            }
+
+
+        }
+        #endregion
+
+
+        #region "GetUserPostDetails"
         [HttpGet]
         public IActionResult GetUserPostDetails(int Id)
         {
@@ -217,7 +269,7 @@ namespace Social_Media_Project.Controllers.API
                 return StatusCode(500, new { msg = Message });
             }
         }
-
+        #endregion
 
         #endregion
 
@@ -494,5 +546,109 @@ namespace Social_Media_Project.Controllers.API
 
         }
         #endregion
+
+        #region "Follow Up"
+
+        [HttpPost]
+        public IActionResult CheckFollowStatus([FromBody] MediaPost obj)
+        {
+            bool isFollowing = false;
+
+            try
+            {
+
+                if (obj.Id != null)
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        SqlCommand cmd = new SqlCommand("usp_FollowGet", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        con.Open();
+
+
+                        cmd.Parameters.AddWithValue("@Mode", 1);
+                        cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
+                        cmd.Parameters.AddWithValue("@FollowUserName", obj.Username);
+                        cmd.Parameters.AddWithValue("@UserId", obj.Id);
+                        cmd.Parameters.AddWithValue("@Username", obj.HdnUsername);
+
+
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            isFollowing = reader.GetInt32(0) == 1;
+                        }
+                        reader.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { error = ex.Message });
+            }
+
+            return Ok(new { isFollowing });
+        }
+
+
+
+        [HttpPost]
+        public IActionResult UserFollowup([FromBody] MediaPost obj)
+        {
+            string Message = "";
+            bool isFollowing = false;
+
+            try
+            {
+                if (obj.Id != null && obj.hdnId != null && obj.Username != null)
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        SqlCommand cmd = new SqlCommand("usp_FollowGet", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        con.Open();
+
+                        cmd.Parameters.AddWithValue("@Mode", 2);
+                        cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
+                        cmd.Parameters.AddWithValue("@FollowUserName", obj.Username);
+                        cmd.Parameters.AddWithValue("@UserId", obj.Id);
+                        cmd.Parameters.AddWithValue("@Username", obj.HdnUsername);
+
+
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            isFollowing = reader.GetInt32(0) == 1;
+                        }
+                        reader.Close();
+
+                        if (!isFollowing)
+                        {
+                            cmd.ExecuteNonQuery();
+                            Message = "Followed successfully";
+                            isFollowing = true;
+                        }
+                        else
+                        {
+                            Message = "Already following";
+                        }
+                    }
+                }
+                else
+                {
+                    Message = "Please select the correct user to follow";
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+            }
+
+            return Ok(new { msg = Message, isFollowing = isFollowing });
+        }
+
+
+        #endregion
+
     }
 }

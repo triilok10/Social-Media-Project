@@ -142,52 +142,54 @@
                 background-color: #0056b3;
             }
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging.js"></script>
-
 <div class="chat-container">
     <h1 class="dynamic-heading">ChatMessenger</h1>
     <div class="chat-window">
-       
     </div>
     <div class="chat-input">
         <input type="text" placeholder="Type a message..." />
         <button>Send</button>
     </div>
 </div>
+<script src="~/js/firebase-app.js"></script><script src="~/js/firebase-messaging.js"></script>
+@* <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script> *@
 
 <script>
+    // Firebase configuration
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyBpvaTISi5cJLmO71U4PsvDgLlGhFYlk70",
+        authDomain: "socialmediaproject-60457.firebaseapp.com",
+        projectId: "socialmediaproject-60457",
+        storageBucket: "socialmediaproject-60457.appspot.com",
+        messagingSenderId: "492049714309",
+        appId: "1:492049714309:web:8c603d2416bff737f5adec"
     };
 
-   
+    // Initialize Firebase
+    debugger;
     firebase.initializeApp(firebaseConfig);
 
+    // Initialize Firebase Cloud Messaging and request permission
     const messaging = firebase.messaging();
 
-    
     messaging.requestPermission()
         .then(() => messaging.getToken())
         .then((token) => {
             console.log('FCM Token:', token);
-           
+            // Store or send this token to your server to associate with the user
         })
         .catch((err) => {
-            console.error('Permission denied', err);
+            console.error('Permission denied or error getting token', err);
         });
 
-    
+    // Handle incoming messages
     messaging.onMessage((payload) => {
         console.log('Message received:', payload);
-        displayMessage(payload.notification.title, payload.notification.body, false); 
+        displayMessage(payload.notification.title, payload.notification.body, false);
     });
 
+    // Function to display the message in the chat UI
     function displayMessage(user, message, isSent) {
         const msgDiv = document.createElement("div");
         msgDiv.classList.add("message", isSent ? "sent" : "received");
@@ -206,17 +208,26 @@
         document.querySelector(".chat-window").appendChild(msgDiv);
     }
 
-    document.querySelector(".chat-input button").addEventListener("click", () => {
-        const message = document.querySelector(".chat-input input[type='text']").value;
-        const recipientUserId = "SomeRecipientUserId"; 
-
-        sendMessageToServer(recipientUserId, message);
-        displayMessage("YourUsername", message, true);
-        document.querySelector(".chat-input input[type='text']").value = '';
+    // Send message from the client to the server
+    document.addEventListener("DOMContentLoaded", () => {
+        const button = document.querySelector(".chat-input button");
+        if (button) {
+            button.addEventListener("click", () => {
+                const messageContent = document.querySelector(".chat-input input[type='text']").value;
+                const recipientUserId = "SomeRecipientUserId";
+                sendMessageToServer(recipientUserId, messageContent);
+                displayMessage("triilok10", messageContent, true);
+                document.querySelector(".chat-input input[type='text']").value = '';
+            });
+        } else {
+            console.error('Button not found');
+        }
     });
 
+    recipientUserId = "fdddffd5g545efe4v4fgfiroopwomvot954u94jijru39nfdnf03ri0rdnf9ew0";
+    // Function to send the message to the server
     function sendMessageToServer(recipientUserId, messageContent) {
-        fetch('/api/chat/send', {
+        fetch('../api/FirebaseMessagingAPI/SendMessage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -224,6 +235,9 @@
             body: JSON.stringify({ recipientUserId, messageContent })
         })
             .then(response => response.json())
-            .catch(err => console.error(err));
+            .then(data => {
+                console.log('Message sent successfully:', data);
+            })
+            .catch(err => console.error('Error sending message:', err));
     }
 </script>

@@ -78,11 +78,11 @@
                         <div>posts</div>
                     </div>
                     <div class="ProfileStat">
-                        <div>5</div>
+                        <div>@ViewBag.Follower</div>
                         <div>followers</div>
                     </div>
                     <div class="ProfileStat">
-                        <div>5</div>
+                        <div>@ViewBag.Following</div>
                         <div>following</div>
                     </div>
                 </div>
@@ -117,8 +117,8 @@
             <p>@ViewBag.bio</p>
         </div>
         <div class="UserAccountPage-BioSection bioEdit">
-            <a class="childBioEdit" href="@Url.Action("UpdateProfile","Account")?HdnView=1">Edit Profile</a>
-            <a class="childBioEdit" href="@Url.Action("","")">Share Profile</a>
+            <a class="childBioEdit" href="@Url.Action("UpdateProfile","Account")?HdnView=1" style="color:white">Edit Profile</a>
+            <a class="childBioEdit" href="@Url.Action("","")" style="color:white">Share Profile</a>
         </div>
         @if (Model != null)
         {
