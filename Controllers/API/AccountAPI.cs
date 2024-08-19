@@ -605,33 +605,60 @@ namespace Social_Media_Project.Controllers.API
                 {
                     using (SqlConnection con = new SqlConnection(_connectionString))
                     {
-                        SqlCommand cmd = new SqlCommand("usp_FollowGet", con);
-                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         con.Open();
 
-                        cmd.Parameters.AddWithValue("@Mode", 2);
-                        cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
-                        cmd.Parameters.AddWithValue("@FollowUserName", obj.Username);
-                        cmd.Parameters.AddWithValue("@UserId", obj.Id);
-                        cmd.Parameters.AddWithValue("@Username", obj.HdnUsername);
-
-
-                        SqlDataReader reader = cmd.ExecuteReader();
-                        if (reader.Read())
+                    
+                        using (SqlCommand cmd = new SqlCommand("usp_FollowGet", con))
                         {
-                            isFollowing = reader.GetInt32(0) == 1;
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                            cmd.Parameters.AddWithValue("@Mode", 1);
+                            cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
+                            cmd.Parameters.AddWithValue("@FollowUserName", obj.Username);
+                            cmd.Parameters.AddWithValue("@UserId", obj.Id);
+                            cmd.Parameters.AddWithValue("@Username", obj.HdnUsername);
+
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    isFollowing = reader.GetInt32(0) == 1;
+                                }
+                            }
                         }
-                        reader.Close();
 
-                        if (!isFollowing)
+                     
+                        if (isFollowing)
                         {
-                            cmd.ExecuteNonQuery();
-                            Message = "Followed successfully";
-                            isFollowing = true;
+                            using (SqlCommand cmd = new SqlCommand("usp_FollowGet", con))
+                            {
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                                cmd.Parameters.AddWithValue("@Mode", 4); 
+                                cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
+                                cmd.Parameters.AddWithValue("@UserId", obj.Id);
+
+                                cmd.ExecuteNonQuery();
+                                Message = "Unfollowed Successfully";
+                                isFollowing = false;
+                            }
                         }
                         else
                         {
-                            Message = "Already following";
+                            using (SqlCommand cmd = new SqlCommand("usp_FollowGet", con))
+                            {
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                                cmd.Parameters.AddWithValue("@Mode", 2); 
+                                cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
+                                cmd.Parameters.AddWithValue("@FollowUserName", obj.Username);
+                                cmd.Parameters.AddWithValue("@UserId", obj.Id);
+                                cmd.Parameters.AddWithValue("@Username", obj.HdnUsername);
+
+                                cmd.ExecuteNonQuery();
+                                Message = "Followed successfully";
+                                isFollowing = true;
+                            }
                         }
                     }
                 }
@@ -647,6 +674,7 @@ namespace Social_Media_Project.Controllers.API
 
             return Ok(new { msg = Message, isFollowing = isFollowing });
         }
+
 
 
         #endregion

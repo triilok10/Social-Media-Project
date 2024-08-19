@@ -4,16 +4,16 @@
 @{
     ViewData["Title"] = "SearchUserHomePage";
 }
-@if (ViewBag.errorMessage != null)
+@if (TempData["errorMessage"] != null)
 {
     <script>
-        toastr.error("@ViewBag.errorMessage");
+        toastr.error("@TempData["errorMessage"]");
     </script>
 }
-@if (ViewBag.successMessage != null)
+@if (TempData["successMessage"] != null)
 {
     <script>
-        toastr.success("@ViewBag.successMessage");
+        toastr.success("@TempData["successMessage"]");
     </script>
 }
 <div class="fix-AlignHomePage">
@@ -44,7 +44,7 @@
         </div>
 
         <div class="UserAccountPage-BioSection">
-            <p><strong>@ViewBag.dateOfBirth</strong></p>
+            <p><strong>DateOfBirth : @ViewBag.dateOfBirth?.ToString("dd/MM/yyyy")</strong></p>
             <br />
             <p>@ViewBag.bio</p>
         </div>
@@ -78,18 +78,16 @@
 </div>
 
 <script type="text/javascript">
-
+    var CheckId = '@ViewBag.id';
+    var Checkusername = '@ViewBag.username';
     $(document).ready(function () {
-        var id = '@ViewBag.id';
-        var username = '@ViewBag.username';
-
-        checkFollowStatus(id, username);
+        checkFollowStatus(CheckId, Checkusername);
     });
 
-    function checkFollowStatus(id, username) {
+    function checkFollowStatus(CheckId, Checkusername) {
         var data = {
-            id: id,
-            hdnUsername: username
+            CheckId: CheckId,
+            Checkusername: Checkusername
         };
 
         $.ajax({
@@ -127,6 +125,7 @@
                     window.location.reload();
                 } else {
                     $('.FollowingList').text('Follow');
+                    window.location.reload();
                 }
             },
             error: function (res) {

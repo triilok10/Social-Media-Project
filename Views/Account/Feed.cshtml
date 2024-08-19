@@ -1,9 +1,9 @@
 ﻿@using Social_Media_Project.Models;
 @model List<MediaPost>;
+<link href="~/js/toastr.min.css" rel="stylesheet" />
 @{
     ViewData["Title"] = "Feed";
 }
-
 
 <div class="container-custom mt-4">
     <h1 class="mb-4">Feed</h1>
@@ -19,37 +19,39 @@
                 </a>
                 <ul class="homeSetting" id="homeSetting-@i.UserId">
                     <li class="listData">
-                        <a href="#messages" class="text-decoration-none">View Profile</a>
+                        <a href="@Url.Action("SearchUserHomePage","Account")?Id=@i.Id" class="text-decoration-none">View Profile</a>
                     </li>
                     <li class="listData">
-                        <a href="#blocklist" class="text-decoration-none">Report</a>
+                        <a href="#report" class="text-decoration-none">Report</a>
                     </li>
                     <li class="listData">
-                        <a href="#download-profile-data" class="text-decoration-none">Direct Message</a>
+                        <a href="#directMessage" class="text-decoration-none">Direct Message</a>
                     </li>
                 </ul>
             </div>
             <img src="@i.PhotoPath" class="card-img-top" alt="Post Image">
-            <div class="card-body">
-                <div class=" d-flex justify-content-between align-items-center">
+            <div class="card-body" style="margin-bottom:50px;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button class="btn btn-outline-primary LikeClass" data-id="@i.UserId" onclick="js_postLike('@i.UserId', '@i.Username');">Like</button>
+                    </div>
                     <div>
                         <h5 class="card-title">@i.Username</h5>
                     </div>
-                    <div>
-                        <button class="btn btn-outline-primary">Like</button>
-                    </div>
                 </div>
                 <p class="card-text">@i.PostCaption</p>
-                <div class="d-flex justify-content-between" style="padding: 5px; box-shadow: 1px 1px 80px 2px gray; margin: 10px;">
-                    <div style="10%">
+                <div class="d-flex justify-content-between" style="padding: 5px; box-shadow: 1px 1px 80px 2px gray; margin: 10px; border-radius:5px;">
+                    <div style="width:10%">
                         <img src="@ViewBag.profilePhotoPath" alt="Profile Photo" style="height: 48px; width: 48px; padding: 2px; border-radius: 50%; border:1px solid black" />
                     </div>
-                    <div style="width:70%">
-                        <input type="text" placeholder=" Add Comment" style="border:none; padding:3px; height: 50px;  width:100%" />
+                    <div style="width:80%">
+                        <input type="text" placeholder=" Add Comment" style="border:none; padding:3px; height: 50px;  width:100%" id="AddCommentSection-@i.UserId" />
                     </div>
-                    <div>   <button class="btn btn-outline-secondary">Comment</button></div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <button data-id="@i.UserId" onclick="js_commentSection('@i.Id','@i.Username', '@i.UserId');" class="btn btn-outline-secondary">Post</button>
+                    </div>
                 </div>
-
+                <div data-id="@i.UserId" id="ControllerCommentView-@i.UserId" class="comments-container"></div>
             </div>
         </div>
     }
@@ -64,6 +66,146 @@
 </div>
 
 <script type="text/javascript">
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+    $(document).ready(function () {
+        var Ids = [];
+        var PostUsernames = [];
+
+
+    @foreach (var item in Model)
+    {
+        <text>
+                Ids.push('@item.UserId');
+            PostUsernames.push('@item.Username');
+        </text>
+        ;
+    }
+
+
+            function Js_PostLikeCheck(Ids, PostUsernames) {
+                for (let i = 0; i < Ids.length; i++) {
+                    var data = {
+                        id: Ids[i],
+                        postUsername: PostUsernames[i]
+                    };
+
+                    $.ajax({
+                        url: "@Url.Action("LikePostCheck", "Utility")",
+                        type: "POST",
+                        data: data,
+                        cache: false,
+                        success: function (res) {
+                            var likeButton = $(".LikeClass[data-id='" + Ids[i] + "']");
+                            if (res.response) {
+                                likeButton.text('Liked');
+                                likeButton.css({
+                                    'background-color': '#007fef',
+                                    'color': 'white'
+                                });
+                            } else {
+
+                                likeButton.text('Like');
+                                likeButton.css({
+                                    'background-color': 'white',
+                                    'color': '#007fef'
+                                });
+                            }
+                        },
+                        error: function (res) {
+                            console.error('Error in checking the Like Post status', res);
+                        }
+                    });
+                }
+            }
+
+        // Call the function
+        Js_PostLikeCheck(Ids, PostUsernames);
+        js_GetCommentView(Ids);
+
+        function js_GetCommentView(Ids) {
+            Ids.forEach(function (id) {
+                var data = { id: id };
+
+                $.ajax({
+                    url: "@Url.Action("GetCommentView", "Utility")",
+                    type: "GET",
+                    data: data,
+                    cache: false,
+                    success: function (res) {
+                        if (res.response === true) {
+                            var postContainer = $("#ControllerCommentView-" + id);
+                            if (postContainer.length) {
+                                res.comment.forEach(function (comment) {
+                                    var commentHtml = `
+                                                                                    <div class="comment-item">
+                                                                                        <strong>${comment.postCommentUsername}</strong>: ${comment.commentInput}
+                                                                                    </div>`;
+                                    postContainer.append(commentHtml);
+                                });
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.error("AJAX error: ", error);
+                    }
+                });
+            });
+        }
+    });
+
+    function js_postLike(Id, PostUsername) {
+        var data = {
+            id: Id,
+            postUsername: PostUsername
+        };
+
+        var likeButton = $(".LikeClass[data-id='" + Id + "']");
+
+        $.ajax({
+            url: "@Url.Action("LikePost", "Utility")",
+            type: "POST",
+            data: data,
+            cache: false,
+            success: function (res) {
+                if (res.isLiked) {
+                    likeButton.text('Liked');
+                    likeButton.css({
+                        'background-color': '#007fef',
+                        'color': 'white'
+                    });
+                    toastr.success("Liked successfully");
+                } else {
+                    likeButton.text('Like');
+                    likeButton.css({
+                        'background-color': 'white',
+                        'color': '#007fef'
+                    });
+                    toastr.success("Unlike Post successfully");
+                }
+            },
+            error: function (res) {
+                console.error('Error following user', res);
+            }
+        });
+    }
+
     function js_ViewFeedProfile(UserId) {
         var allSettings = document.querySelectorAll('.homeSetting');
         allSettings.forEach(function (setting) {
@@ -79,4 +221,36 @@
             element.style.display = 'none';
         }
     }
+
+    function js_commentSection(Id, Username, UserId) {
+        var commentData = document.getElementById("AddCommentSection-" + UserId).value;
+
+        var finalData = {
+            comment: commentData,
+            postId: UserId,
+            postUsername: Username,
+            userIdd: Id
+        };
+
+        $.ajax({
+            url: "@Url.Action("AddCommentSection", "Utility")",
+            type: "POST",
+            data: finalData,
+            cache: false,
+            success: function (res) {
+                if (res.res == true) {
+                    toastr.success(res.msg);
+                    window.location.reload();
+                } else {
+                    toastr.error(res.msg);
+                    window.location.reload();
+                }
+
+            },
+            error: function () {
+                toastr.error("Error adding the comment");
+            }
+        });
+    }
 </script>
+<script src="~/js/toastr.min.js"></script>

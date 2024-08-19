@@ -47,5 +47,7 @@
 
         //PostCount
         public string? PostCount { get; set; }
+        //PostId
+        public int? PostId { get; set; }
     }
 }

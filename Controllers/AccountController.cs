@@ -670,6 +670,7 @@ namespace Social_Media_Project.Controllers
         #endregion
 
         #region "Search Profile Homepage"
+        [HttpGet]
         public async Task<IActionResult> SearchUserHomePage(string Id = "")
         {
             string Message = "";
@@ -680,59 +681,66 @@ namespace Social_Media_Project.Controllers
                 var Username = _sessionService.GetString("Username");
                 if (UserId != null && Username != null)
                 {
-
-                    string url = baseUrl + $"api/AccountAPI/GetUserBioDetails?Id={Id}";
-                    HttpResponseMessage res = await _httpClient.GetAsync(url);
-                    if (res.IsSuccessStatusCode)
+                    if (!string.IsNullOrWhiteSpace(Id))
                     {
-                        string resBody = await res.Content.ReadAsStringAsync();
-                        dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
-                        ViewBag.fullname = resData.fullname;
-                        ViewBag.profilePhotoPath = resData.profilePhotoPath;
-                        ViewBag.bio = resData.bio;
-                        ViewBag.dateOfBirth = resData.dateOfBirth;
-                        ViewBag.username = resData.username;
-                        ViewBag.id = resData.id;
-                        var CheckId = resData.id;
+                        string url = baseUrl + $"api/AccountAPI/GetUserBioDetails?Id={Id}";
+                        HttpResponseMessage res = await _httpClient.GetAsync(url);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                            ViewBag.fullname = resData.fullname;
+                            ViewBag.profilePhotoPath = resData.profilePhotoPath;
+                            ViewBag.bio = resData.bio;
+                            ViewBag.dateOfBirth = resData.dateOfBirth;
+                            ViewBag.username = resData.username;
+                            ViewBag.id = resData.id;
+                            var CheckId = resData.id;
 
-                        if (CheckId == UserId)
-                        {
-                            return RedirectToAction("UserAccountPage", "Account");
-                        }
-                        else
-                        {
-                            string purl = baseUrl + "api/AccountAPI/GetUserPostDetails";
-                            string pfullUrl = $"{purl}?Id={Id}";
-                            HttpResponseMessage pres = await _httpClient.GetAsync(pfullUrl);
-                            if (pres.IsSuccessStatusCode)
+                            if (CheckId == UserId)
                             {
-                                string presBody = await pres.Content.ReadAsStringAsync();
-                                List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(presBody);
-
-                                //Call the API here to get the Data of the dynamic Data of the No. of Follower's and Following
-                                string FollowUrl = baseUrl + $"api/AccountAPI/GetFollowingData?Id={Id}";
-                                HttpResponseMessage followRes = await _httpClient.GetAsync(FollowUrl);
-                                if (followRes.IsSuccessStatusCode)
-                                {
-                                    string followBody = await followRes.Content.ReadAsStringAsync();
-                                    MediaPost obj = JsonConvert.DeserializeObject<MediaPost>(followBody);
-                                    ViewBag.Follower = obj.Follower;
-                                    ViewBag.Following = obj.Following;
-                                    ViewBag.PostCount = obj.PostCount;
-                                }
-
-                                return View(lstData);
-
+                                return RedirectToAction("UserAccountPage", "Account");
                             }
                             else
                             {
-                                return BadRequest("Error fetching data from the API.");
+                                string purl = baseUrl + "api/AccountAPI/GetUserPostDetails";
+                                string pfullUrl = $"{purl}?Id={Id}";
+                                HttpResponseMessage pres = await _httpClient.GetAsync(pfullUrl);
+                                if (pres.IsSuccessStatusCode)
+                                {
+                                    string presBody = await pres.Content.ReadAsStringAsync();
+                                    List<MediaPost> lstData = JsonConvert.DeserializeObject<List<MediaPost>>(presBody);
+
+                                    //Call the API here to get the Data of the dynamic Data of the No. of Follower's and Following
+                                    string FollowUrl = baseUrl + $"api/AccountAPI/GetFollowingData?Id={Id}";
+                                    HttpResponseMessage followRes = await _httpClient.GetAsync(FollowUrl);
+                                    if (followRes.IsSuccessStatusCode)
+                                    {
+                                        string followBody = await followRes.Content.ReadAsStringAsync();
+                                        MediaPost obj = JsonConvert.DeserializeObject<MediaPost>(followBody);
+                                        ViewBag.Follower = obj.Follower;
+                                        ViewBag.Following = obj.Following;
+                                        ViewBag.PostCount = obj.PostCount;
+                                    }
+
+                                    return View(lstData);
+
+                                }
+                                else
+                                {
+                                    return BadRequest("Error fetching data from the API.");
+                                }
                             }
+                        }
+                        else
+                        {
+                            return BadRequest("Error in Fetching Data");
                         }
                     }
                     else
                     {
-                        return BadRequest("Error in Fetching Data");
+                        Message = "Please pass the required Parameter!";
+                        return Ok(new { msg = Message });
                     }
                 }
                 else
@@ -854,7 +862,7 @@ namespace Social_Media_Project.Controllers
         #region "UserFollow Code"
 
         [HttpPost]
-        public async Task<IActionResult> CheckFollowStatus(string Id = "", string hdnUsername = "")
+        public async Task<IActionResult> CheckFollowStatus(string CheckId = "", string Checkusername = "")
         {
             bool isFollowing = false;
 
@@ -865,15 +873,15 @@ namespace Social_Media_Project.Controllers
 
                 if (UserId != null && Username != null)
                 {
-                    if (!string.IsNullOrEmpty(Id))
+                    if (!string.IsNullOrEmpty(CheckId))
                     {
                         string url = baseUrl + $"api/AccountAPI/CheckFollowStatus";
                         MediaPost obj = new MediaPost
                         {
                             Username = Username,
-                            Id = Convert.ToInt32(Id),
+                            Id = Convert.ToInt32(CheckId),
                             hdnId = UserId,
-                            HdnUsername = hdnUsername
+                            HdnUsername = Checkusername
                         };
 
                         var jsonData = JsonConvert.SerializeObject(obj);
@@ -938,7 +946,9 @@ namespace Social_Media_Project.Controllers
                             string resBody = await res.Content.ReadAsStringAsync();
                             dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
                             response = true;
-                            ViewBag.successMessage = resData.msg;
+                            Message = resData.msg;
+                            TempData["successMessage"] = Message;
+                            //TempData.Keep("successMessage");
                             isFollowing = Convert.ToBoolean(resData.isFollowing);
                         }
                     }
@@ -949,7 +959,7 @@ namespace Social_Media_Project.Controllers
                 }
                 else
                 {
-                    Message = Message;
+
                     TempData["errorMessage"] = Message;
                     TempData.Keep("errorMessage");
                     return RedirectToAction("Index", "Home");

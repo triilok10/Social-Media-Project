@@ -479,6 +479,7 @@ label.error {
 .add-post-form {
     display: flex;
     flex-direction: column;
+    margin-bottom: 12px;
 }
 
     .add-post-form label {
