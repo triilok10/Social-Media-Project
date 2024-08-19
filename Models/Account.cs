@@ -28,5 +28,8 @@ namespace Social_Media_Project.Models
         public string? Bio { get; set; }
         //Hidden Id
         public int? hdnId { get; set; }
+
+        //FCM Token
+        public string? FcmToken { get; set; }
     }
 }

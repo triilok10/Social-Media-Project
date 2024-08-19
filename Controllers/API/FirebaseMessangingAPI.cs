@@ -3,6 +3,8 @@ using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Social_Media_Project.Models;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace Social_Media_Project.Controllers.API
@@ -12,6 +14,10 @@ namespace Social_Media_Project.Controllers.API
     public class FirebaseMessagingAPI : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly string _connectionString;
+
+
+
 
 
         public IActionResult Test()
@@ -22,7 +28,7 @@ namespace Social_Media_Project.Controllers.API
         public FirebaseMessagingAPI(IConfiguration configuration)
         {
             _configuration = configuration;
-
+            _connectionString = configuration.GetConnectionString("CustomConnection");
             if (FirebaseApp.DefaultInstance == null)
             {
                 FirebaseApp.Create(new AppOptions()
@@ -67,5 +73,48 @@ namespace Social_Media_Project.Controllers.API
             public string RecipientUserId { get; set; }
             public string MessageContent { get; set; }
         }
+
+        #region "GetChatMessage"
+        [HttpGet]
+        public IActionResult GetChatMessage(string Id = "")
+        {
+            string Message = "";
+            bool response = false;
+            try
+            {
+                MediaPost objAccount = new MediaPost();
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
+                    con.Open();
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 1);
+                    cmd.Parameters.AddWithValue("@Id", Id);
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            objAccount.Fullname = Convert.ToString(rdr["FullName"]);
+                            objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
+                            objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
+                            objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
+                            objAccount.Username = Convert.ToString(rdr["Username"]);
+                            objAccount.Id = Convert.ToInt32(rdr["Id"]);
+                        }
+                        response = true;
+                    }
+                }
+                return Ok(objAccount);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Ok();
+        }
+
+        #endregion
+
+
     }
 }

@@ -135,6 +135,7 @@ namespace Social_Media_Project.Controllers
                     }
                     else
                     {
+                        pAccount.FcmToken = Request.Form["FcmToken"];
                         string url = baseUrl + "api/AccountAPI/Signup";
                         string jsonBody = JsonConvert.SerializeObject(pAccount);
                         StringContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");

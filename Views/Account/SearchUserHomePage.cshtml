@@ -50,7 +50,7 @@
         </div>
         <div class="UserAccountPage-BioSection bioEdit">
             <a class="childBioEdit FollowingList" href="javascript:void(0)" style="color:white" onclick="js_UserFollow('@ViewBag.id','@ViewBag.username');">Follow</a>
-            <a class="childBioEdit" href="javascript:void(0)" style="color:white">Message</a>
+            <a class="childBioEdit" href="@Url.Action("ChatMessanger","Messanger")?Id=@ViewBag.id" style="color:white">Message</a>
         </div>
         @if (Model != null)
         {
@@ -133,6 +133,8 @@
             }
         });
     }
+
+    
 
 
 </script>
