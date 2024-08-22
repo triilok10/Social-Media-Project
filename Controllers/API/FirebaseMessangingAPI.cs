@@ -38,35 +38,6 @@ namespace Social_Media_Project.Controllers.API
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] ChatMessageRequest request)
-        {
-            if (string.IsNullOrEmpty(request.RecipientUserId) || string.IsNullOrEmpty(request.MessageContent))
-            {
-                return BadRequest("Invalid request.");
-            }
-
-            var message = new Message()
-            {
-                Token = request.RecipientUserId,
-                Notification = new Notification()
-                {
-                    Title = "New Message",
-                    Body = request.MessageContent
-                }
-            };
-
-            string response;
-            try
-            {
-                response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
-                return Ok(new { MessageId = response });
-            }
-            catch (FirebaseMessagingException ex)
-            {
-                return StatusCode(500, new { Error = ex.Message });
-            }
-        }
 
         public class ChatMessageRequest
         {
@@ -76,44 +47,133 @@ namespace Social_Media_Project.Controllers.API
 
         #region "GetChatMessage"
         [HttpGet]
-        public IActionResult GetChatMessage(string Id = "")
+        public IActionResult GetChatMessage(string Id = "", string UserId = "")
         {
             string Message = "";
             bool response = false;
             try
             {
-                MediaPost objAccount = new MediaPost();
-                using (SqlConnection con = new SqlConnection(_connectionString))
+                if (UserId != null && Id != null)
                 {
-                    SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
-                    con.Open();
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Mode", 1);
-                    cmd.Parameters.AddWithValue("@Id", Id);
-                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    MediaPost objAccount = new MediaPost();
+                    using (SqlConnection con = new SqlConnection(_connectionString))
                     {
-                        if (rdr.Read())
+                        SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
+                        con.Open();
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Mode", 1);
+                        cmd.Parameters.AddWithValue("@Id", Id);
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
                         {
-                            objAccount.Fullname = Convert.ToString(rdr["FullName"]);
-                            objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
-                            objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
-                            objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
-                            objAccount.Username = Convert.ToString(rdr["Username"]);
-                            objAccount.Id = Convert.ToInt32(rdr["Id"]);
+                            if (rdr.Read())
+                            {
+                                objAccount.Fullname = Convert.ToString(rdr["FullName"]);
+                                objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
+                                objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
+                                objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
+                                objAccount.Username = Convert.ToString(rdr["Username"]);
+                                objAccount.Id = Convert.ToInt32(rdr["Id"]);
+                                objAccount.FCMToken = Convert.ToString(rdr["FCMToken"]);
+                            }
+                            response = true;
                         }
-                        response = true;
                     }
+                    return Ok(objAccount);
                 }
-                return Ok(objAccount);
+                else
+                {
+                    Message = "Please pass the required Parameter!";
+                    response = false;
+                }
             }
             catch (Exception ex)
             {
-
+                Message = ex.Message;
+                response = false;
             }
-            return Ok();
+            return Ok(new { Message, response });
         }
 
         #endregion
+
+        #region "Get Chat Message Token"
+        [HttpGet]
+        public IActionResult GetChatMessageToken(string UserId = "")
+        {
+            string Message = "";
+            bool response = false;
+            try
+            {
+                if (UserId != null)
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Mode", 3);
+                        cmd.Parameters.AddWithValue("@Id", UserId);
+
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                MediaPost post = new MediaPost
+                                {
+                                    UserFcmToken = Convert.ToString(rdr["FCMToken"])
+                                };
+                                return Ok(post);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Message = "Please pass the required Parameter";
+                    response = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                response = false;
+                Message = ex.Message;
+            }
+            return Ok(new { msg = Message, res = response });
+        }
+        #endregion
+
+        [HttpPost]
+        public async Task<IActionResult> SendMessage([FromBody] NotificationSend notification)
+        {
+            if (string.IsNullOrEmpty(notification.Token) || string.IsNullOrEmpty(notification.MessageContent))
+            {
+                return BadRequest(new { Error = "Invalid request data" });
+            }
+
+            try
+            {
+                var message = new Message
+                {
+                    Token = notification.Token,
+                    Notification = new Notification
+                    {
+                        Title = "New Message",
+                        Body = notification.MessageContent
+                    }
+                };
+
+                string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+                return Ok(new { Response = response, Status = "Message sent successfully" });
+            }
+            catch (FirebaseMessagingException ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
 
 
     }

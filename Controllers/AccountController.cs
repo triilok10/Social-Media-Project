@@ -781,6 +781,10 @@ namespace Social_Media_Project.Controllers
                         {
                             string resBody = await res.Content.ReadAsStringAsync();
                             MediaPost resData = JsonConvert.DeserializeObject<MediaPost>(resBody);
+                            if (resData != null)
+                            {
+                                ViewBag.ProfilePhotoPath = resData.ProfilePhotoPath;
+                            }
                             return View(resData);
                         }
                         else

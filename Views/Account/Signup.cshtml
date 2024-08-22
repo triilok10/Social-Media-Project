@@ -174,7 +174,6 @@
     }
 
 
-
     const firebaseConfig = {
         apiKey: "AIzaSyBpvaTISi5cJLmO71U4PsvDgLlGhFYlk70",
         authDomain: "socialmediaproject-60457.firebaseapp.com",
@@ -185,7 +184,6 @@
     };
 
     // Initialize Firebase
-    debugger;
     firebase.initializeApp(firebaseConfig);
 
     // Initialize Firebase Cloud Messaging and request permission
@@ -196,21 +194,57 @@
                 const messaging = firebase.messaging();
                 messaging.useServiceWorker(registration);
 
-                messaging.requestPermission()
-                    .then(() => {
-                        return messaging.getToken();
-                    })
-                    .then((token) => {
-                        console.log('FCM Token:', token);
-                        $('#fcmToken').val(token); // Set the token value in a hidden input field
-                    })
-                    .catch((err) => {
-                        console.error('Permission denied or error getting token', err);
-                    });
+                // Delete the existing token (if any) and then request a new one
+                messaging.getToken().then((currentToken) => {
+                    if (currentToken) {
+                        messaging.deleteToken(currentToken).then(() => {
+                            console.log('Existing FCM Token deleted, requesting a new token...');
+                            requestNewToken(messaging);
+                        }).catch((err) => {
+                            console.error('Error deleting existing FCM token:', err);
+                        });
+                    } else {
+                        requestNewToken(messaging);
+                    }
+                }).catch((err) => {
+                    console.error('Error getting current FCM token:', err);
+                });
+
+                function requestNewToken(messaging) {
+                    messaging.requestPermission()
+                        .then(() => {
+                            return messaging.getToken();
+                        })
+                        .then((token) => {
+                            console.log('New FCM Token:', token);
+                            $('#fcmToken').val(token);
+                            // Send the token to your server
+                        })
+                        .catch((err) => {
+                            console.error('Permission denied or error getting token', err);
+                        });
+                }
+
+                // Handle token refresh
+                messaging.onTokenRefresh(() => {
+                    messaging.getToken()
+                        .then((refreshedToken) => {
+                            console.log('Token refreshed:', refreshedToken);
+                            $('#fcmToken').val(refreshedToken);
+                            // Send the refreshed token to your server
+                        })
+                        .catch((err) => {
+                            console.error('Error refreshing token:', err);
+                        });
+                });
             })
             .catch((err) => {
                 console.error('Service Worker registration failed:', err);
             });
     }
+
+
+
+
 
 </script>

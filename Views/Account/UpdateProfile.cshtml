@@ -145,7 +145,12 @@
                     <div class="form-group">
                         <label for="ProfilePhoto">Add Profile Photo</label>
                         <input type="file" asp-for="ProfilePhoto" id="profilePhotoInput" name="ProfilePhoto" class="input-control" onchange="previewProfilePhoto(event)">
+                        @if(@Model.ProfilePhotoPath!=null){
                         <input type="hidden" asp-for="ProfilePhotoPath" value="@Model.ProfilePhotoPath" />
+                        }
+                        else{
+                        <input type="hidden" asp-for="ProfilePhotoPath" value="null.jpg" />
+                        }
                     </div>
                     <div class="form-group">
                         <label for="DateOfBirth">Date Of Birth</label>

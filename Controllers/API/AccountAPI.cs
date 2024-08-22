@@ -87,6 +87,7 @@ namespace Social_Media_Project.Controllers.API
                         cmd.Parameters.AddWithValue("@NewPassword", pAccount.Password);
                         cmd.Parameters.AddWithValue("@ConfirmPassword", pAccount.ConfirmPassword);
                         cmd.Parameters.AddWithValue("@Username", pAccount.Username);
+                        cmd.Parameters.AddWithValue("@FCMToken", pAccount.FcmToken);
 
                         SqlParameter outputMessage = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
                         outputMessage.Direction = ParameterDirection.Output;
@@ -492,9 +493,9 @@ namespace Social_Media_Project.Controllers.API
                             MediaPost obj = new MediaPost
                             {
                                 Fullname = Convert.ToString(rdr["Fullname"]),
-                                Bio = Convert.ToString(rdr["ProfileBio"]),
-                                DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]),
-                                ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]),
+                                Bio = Convert.IsDBNull(rdr["ProfileBio"]) ? null : Convert.ToString(rdr["ProfileBio"]),
+                                DateOfBirth = Convert.IsDBNull(rdr["DateOfBirth"]) ? (DateTime?)null : Convert.ToDateTime(rdr["DateOfBirth"]),
+                                ProfilePhotoPath = Convert.IsDBNull(rdr["ProfilePhotoPath"]) ? null : Convert.ToString(rdr["ProfilePhotoPath"]),
                                 Mobile = Convert.ToString(rdr["Mobile"]),
                                 Email = Convert.ToString(rdr["Email"]),
                                 Username = Convert.ToString(rdr["Username"])
@@ -607,7 +608,7 @@ namespace Social_Media_Project.Controllers.API
                     {
                         con.Open();
 
-                    
+
                         using (SqlCommand cmd = new SqlCommand("usp_FollowGet", con))
                         {
                             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -627,14 +628,14 @@ namespace Social_Media_Project.Controllers.API
                             }
                         }
 
-                     
+
                         if (isFollowing)
                         {
                             using (SqlCommand cmd = new SqlCommand("usp_FollowGet", con))
                             {
                                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                cmd.Parameters.AddWithValue("@Mode", 4); 
+                                cmd.Parameters.AddWithValue("@Mode", 4);
                                 cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
                                 cmd.Parameters.AddWithValue("@UserId", obj.Id);
 
@@ -649,7 +650,7 @@ namespace Social_Media_Project.Controllers.API
                             {
                                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                cmd.Parameters.AddWithValue("@Mode", 2); 
+                                cmd.Parameters.AddWithValue("@Mode", 2);
                                 cmd.Parameters.AddWithValue("@FollowId", obj.hdnId);
                                 cmd.Parameters.AddWithValue("@FollowUserName", obj.Username);
                                 cmd.Parameters.AddWithValue("@UserId", obj.Id);
