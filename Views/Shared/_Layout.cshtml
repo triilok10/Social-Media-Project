@@ -37,18 +37,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/validate.min.js"></script>
     <script src="~/js/validate.js"></script>
-    @* <script src="~/js/firebase-messaging-sw.js"></script> *@
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/js/firebase-messaging-sw.js')
-                .then(function (registration) {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch(function (err) {
-                    console.error('Service Worker registration failed:', err);
-                });
-        }
-    </script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

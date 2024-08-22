@@ -40,16 +40,6 @@ builder.Services.AddAuthentication(options =>
     options.CallbackPath = "/signin-google";
 });
 
-// Firebase configuration (for web)
-var firebaseConfig = builder.Configuration.GetSection("Firebase");
-var serviceAccountPath = firebaseConfig["ServiceAccountPath"];
-
-// Initialize FirebaseAdmin for server-side operations (like FCM, Firestore, etc.)
-FirebaseApp.Create(new AppOptions
-{
-    Credential = GoogleCredential.FromFile(serviceAccountPath)
-});
-
 var app = builder.Build();
 var configuration = builder.Configuration;
 string connectionString = "data source=ACER\\CYNOSUREDBS; Initial Catalog = SocialMediaProject; Integrated Security = true; TrustServerCertificate=true";

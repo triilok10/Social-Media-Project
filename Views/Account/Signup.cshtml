@@ -54,7 +54,6 @@
                         <label asp-for="ConfirmPassword">Confirm Password</label>
                         <input asp-for="ConfirmPassword" id="ConfirmPassword" name="ConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" required>
                     </div>
-                    <input type="hidden" id="fcmToken" name="FcmToken" />
                     <div class="signup-form-group signup-Margin">
                         <button type="submit" class="btn-submit">Sign Up</button>
                     </div>
@@ -97,12 +96,7 @@
     </div>
 </div>
 
-<script src="~/js/firebase-app.js"></script>
-<script src="~/js/firebase-messaging.js"></script>
 <script type="text/javascript">
-
-
-
 
     $(document).ready(function () {
         // Toastr options
@@ -172,78 +166,6 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
-
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBpvaTISi5cJLmO71U4PsvDgLlGhFYlk70",
-        authDomain: "socialmediaproject-60457.firebaseapp.com",
-        projectId: "socialmediaproject-60457",
-        storageBucket: "socialmediaproject-60457.appspot.com",
-        messagingSenderId: "492049714309",
-        appId: "1:492049714309:web:8c603d2416bff737f5adec"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    // Initialize Firebase Cloud Messaging and request permission
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/js/firebase-messaging-sw.js')
-            .then((registration) => {
-                console.log('Service Worker registered with scope:', registration.scope);
-                const messaging = firebase.messaging();
-                messaging.useServiceWorker(registration);
-
-                // Delete the existing token (if any) and then request a new one
-                messaging.getToken().then((currentToken) => {
-                    if (currentToken) {
-                        messaging.deleteToken(currentToken).then(() => {
-                            console.log('Existing FCM Token deleted, requesting a new token...');
-                            requestNewToken(messaging);
-                        }).catch((err) => {
-                            console.error('Error deleting existing FCM token:', err);
-                        });
-                    } else {
-                        requestNewToken(messaging);
-                    }
-                }).catch((err) => {
-                    console.error('Error getting current FCM token:', err);
-                });
-
-                function requestNewToken(messaging) {
-                    messaging.requestPermission()
-                        .then(() => {
-                            return messaging.getToken();
-                        })
-                        .then((token) => {
-                            console.log('New FCM Token:', token);
-                            $('#fcmToken').val(token);
-                            // Send the token to your server
-                        })
-                        .catch((err) => {
-                            console.error('Permission denied or error getting token', err);
-                        });
-                }
-
-                // Handle token refresh
-                messaging.onTokenRefresh(() => {
-                    messaging.getToken()
-                        .then((refreshedToken) => {
-                            console.log('Token refreshed:', refreshedToken);
-                            $('#fcmToken').val(refreshedToken);
-                            // Send the refreshed token to your server
-                        })
-                        .catch((err) => {
-                            console.error('Error refreshing token:', err);
-                        });
-                });
-            })
-            .catch((err) => {
-                console.error('Service Worker registration failed:', err);
-            });
-    }
-
-
 
 
 

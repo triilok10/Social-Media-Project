@@ -16,10 +16,6 @@ namespace Social_Media_Project.Controllers.API
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
 
-
-
-
-
         public IActionResult Test()
         {
             string Message = "Test Ok";
@@ -29,13 +25,7 @@ namespace Social_Media_Project.Controllers.API
         {
             _configuration = configuration;
             _connectionString = configuration.GetConnectionString("CustomConnection");
-            if (FirebaseApp.DefaultInstance == null)
-            {
-                FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromFile(_configuration["Firebase:ServiceAccountPath"])
-                });
-            }
+            
         }
 
 
@@ -73,7 +63,6 @@ namespace Social_Media_Project.Controllers.API
                                 objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
                                 objAccount.Username = Convert.ToString(rdr["Username"]);
                                 objAccount.Id = Convert.ToInt32(rdr["Id"]);
-                                objAccount.FCMToken = Convert.ToString(rdr["FCMToken"]);
                             }
                             response = true;
                         }
@@ -96,84 +85,41 @@ namespace Social_Media_Project.Controllers.API
 
         #endregion
 
-        #region "Get Chat Message Token"
-        [HttpGet]
-        public IActionResult GetChatMessageToken(string UserId = "")
-        {
-            string Message = "";
-            bool response = false;
-            try
-            {
-                if (UserId != null)
-                {
-                    using (SqlConnection con = new SqlConnection(_connectionString))
-                    {
-                        con.Open();
-                        SqlCommand cmd = new SqlCommand("usp_GetUserDetails", con);
-                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@Mode", 3);
-                        cmd.Parameters.AddWithValue("@Id", UserId);
 
-                        using (SqlDataReader rdr = cmd.ExecuteReader())
-                        {
-                            while (rdr.Read())
-                            {
-                                MediaPost post = new MediaPost
-                                {
-                                    UserFcmToken = Convert.ToString(rdr["FCMToken"])
-                                };
-                                return Ok(post);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Message = "Please pass the required Parameter";
-                    response = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                response = false;
-                Message = ex.Message;
-            }
-            return Ok(new { msg = Message, res = response });
-        }
-        #endregion
+        //[HttpPost]
+        //public async Task<IActionResult> SendMessage([FromBody] NotificationSend notification)
+        //{
+        //    if (string.IsNullOrEmpty(notification.Token) || string.IsNullOrEmpty(notification.MessageContent))
+        //    {
+        //        return BadRequest(new { Error = "Invalid request data" });
+        //    }
 
-        [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] NotificationSend notification)
-        {
-            if (string.IsNullOrEmpty(notification.Token) || string.IsNullOrEmpty(notification.MessageContent))
-            {
-                return BadRequest(new { Error = "Invalid request data" });
-            }
+        //    try
+        //    {
+        //        var message = new Message
+        //        {
+        //            Token = notification.Token,
+        //            Notification = new Notification
+        //            {
+        //                Title = "New Message",
+        //                Body = notification.MessageContent
+        //            }
+        //        };
 
-            try
-            {
-                var message = new Message
-                {
-                    Token = notification.Token,
-                    Notification = new Notification
-                    {
-                        Title = "New Message",
-                        Body = notification.MessageContent
-                    }
-                };
+        //        string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+        //        return Ok(new { Response = response, Status = "Message sent successfully" });
+        //    }
+        //    catch (FirebaseMessagingException ex)
+        //    {
+        //        return StatusCode(500, new { Error = ex.Message });
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return StatusCode(500, new { Error = ex.Message });
+        //    }
+        //}
+        
 
-                string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
-                return Ok(new { Response = response, Status = "Message sent successfully" });
-            }
-            catch (FirebaseMessagingException ex)
-            {
-                return StatusCode(500, new { Error = ex.Message });
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(500, new { Error = ex.Message });
-            }
-        }
 
 
     }

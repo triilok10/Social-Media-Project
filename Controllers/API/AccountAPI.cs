@@ -87,7 +87,6 @@ namespace Social_Media_Project.Controllers.API
                         cmd.Parameters.AddWithValue("@NewPassword", pAccount.Password);
                         cmd.Parameters.AddWithValue("@ConfirmPassword", pAccount.ConfirmPassword);
                         cmd.Parameters.AddWithValue("@Username", pAccount.Username);
-                        cmd.Parameters.AddWithValue("@FCMToken", pAccount.FcmToken);
 
                         SqlParameter outputMessage = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
                         outputMessage.Direction = ParameterDirection.Output;

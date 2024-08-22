@@ -47,36 +47,14 @@ namespace Social_Media_Project.Controllers
                         HttpResponseMessage res = await _httpClient.GetAsync(url);
                         if (res.IsSuccessStatusCode)
                         {
-                            string urll = baseUrl + $"api/FirebaseMessagingAPI/GetChatMessageToken?UserId={UserId}";
-
-                            HttpResponseMessage responsee = await _httpClient.GetAsync(urll);
-                            if (responsee.IsSuccessStatusCode)
-                            {
-                                string fcmBody = await responsee.Content.ReadAsStringAsync();
-                                MediaPost objMediaPost = JsonConvert.DeserializeObject<MediaPost>(fcmBody);
-
-                                var fcmToken = objMediaPost.UserFcmToken;
-                                _sessionService.SetString("UserFCMToken", fcmToken);
-                                string resBody = await res.Content.ReadAsStringAsync();
-                                MediaPost obj = JsonConvert.DeserializeObject<MediaPost>(resBody);
-
-                                var messageFCMToken = obj.FCMToken;
-                                _sessionService.SetString("MessageFCMToken", messageFCMToken);
-
-                                return View(obj);
-                            }
-                            else
-                            {
-                                return BadRequest("Error in Fetching the Data from the API");
-                            }
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            MediaPost obj = JsonConvert.DeserializeObject<MediaPost>(resBody);
+                            return View(obj);
                         }
                         else
                         {
                             return BadRequest("Error in Fetching the Data from the API");
                         }
-
-
-
                     }
                     else
                     {
@@ -84,12 +62,9 @@ namespace Social_Media_Project.Controllers
                         response = false;
                         return Ok(new { Message, response });
                     }
-
-
                 }
                 else
                 {
-
                     TempData["errorMessage"] = "Please Login";
                     TempData.Keep("errorMessage");
                     return View("Index", "Home");
@@ -101,56 +76,6 @@ namespace Social_Media_Project.Controllers
                 return BadRequest(Message);
             }
         }
-
-
-        [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] NotificationSend objNotification)
-        {
-
-            var UserToken = _sessionService.GetString("MessageFCMToken");
-
-
-            string Message = "";
-            bool response = false;
-
-
-            try
-            {
-                if (UserToken != null)
-                {
-                    string url = baseUrl + "api/FirebaseMessagingAPI/SendMessage";
-                    objNotification.Token = UserToken;
-                    var JsonData = new
-                    {
-                        objNotification.Token,
-                        objNotification.MessageContent
-                    };
-                    string JsonDataa = JsonConvert.SerializeObject(JsonData);
-                    StringContent content = new StringContent(JsonDataa, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage fcmResponse = await _httpClient.PostAsync(url, content);
-                    if (fcmResponse.IsSuccessStatusCode)
-                    {
-                        string resBody = await fcmResponse.Content.ReadAsStringAsync();
-                        return Json(new { success = true, message = "Message sent successfully" });
-                    }
-                    else
-                    {
-                        return StatusCode((int)fcmResponse.StatusCode, new { error = "Failed to send message via FCM" });
-                    }
-
-                }
-                else
-                {
-                    return BadRequest("FCM Token is Missing here");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Error = ex.Message });
-            }
-        }
-
 
 
     }
