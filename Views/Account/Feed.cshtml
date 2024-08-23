@@ -4,6 +4,34 @@
 @{
     ViewData["Title"] = "Feed";
 }
+<style>
+    .comments-container {
+        padding: 10px;
+        border-top: 1px solid #e0e0e0;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+
+    .comment-item {
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+        .comment-item strong {
+            color: #333;
+        }
+
+        .comment-item p {
+            margin: 0;
+        }
+
+        .comment-item:last-child {
+            margin-bottom: 0;
+        }
+</style>
 
 <div class="container-custom mt-4">
     <h1 class="mb-4">Feed</h1>
@@ -51,7 +79,10 @@
                         <button data-id="@i.UserId" onclick="js_commentSection('@i.Id','@i.Username', '@i.UserId');" class="btn btn-outline-secondary">Post</button>
                     </div>
                 </div>
-                <div data-id="@i.UserId" id="ControllerCommentView-@i.UserId" class="comments-container"></div>
+                <div class="comments-container" data-id="@i.UserId" id="ControllerCommentView-@i.UserId">
+                    <!-- Comments will be dynamically inserted here -->
+                </div>
+
             </div>
         </div>
     }
@@ -154,9 +185,9 @@
                             if (postContainer.length) {
                                 res.comment.forEach(function (comment) {
                                     var commentHtml = `
-                                                                                    <div class="comment-item">
-                                                                                        <strong>${comment.postCommentUsername}</strong>: ${comment.commentInput}
-                                                                                    </div>`;
+                                                                                        <div class="comment-item">
+                                                                                            <strong>${comment.postCommentUsername}</strong>: ${comment.commentInput}
+                                                                                        </div>`;
                                     postContainer.append(commentHtml);
                                 });
                             }

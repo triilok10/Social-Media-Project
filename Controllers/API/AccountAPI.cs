@@ -256,7 +256,8 @@ namespace Social_Media_Project.Controllers.API
                             MediaPost objAccount = new MediaPost
                             {
                                 PhotoPath = Convert.ToString(rdr["PhotoPath"]),
-                                PostCaption = Convert.ToString(rdr["PostCaption"])
+                                PostCaption = Convert.ToString(rdr["PostCaption"]),
+                                PostId = Convert.ToInt32(rdr["Id"])
                             };
                             ltrMediaPost.Add(objAccount);
                         }

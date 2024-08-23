@@ -61,6 +61,64 @@
         display: flex;
         justify-content: center;
     }
+
+
+    .forEach-AlignClass {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .PhotoSection-Child {
+        position: relative;
+    }
+
+    .three-dots-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        z-index: 100;
+    }
+
+    .post-menu {
+        position: absolute;
+        top: 40px;
+        right: 10px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        z-index: 1000;
+        width: 150px;
+        display: none; /* Hidden by default */
+    }
+
+        .post-menu li {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .post-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .post-menu li:hover {
+                background-color: #f0f0f0;
+            }
+
+        .post-menu a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+            .post-menu a:hover {
+                color: #007bff;
+            }
 </style>
 <div class="fix-AlignHomePage">
     <div style="width:800px;">
@@ -125,15 +183,27 @@
             <div class="homepage-PhotoSection">
                 @foreach (var post in Model)
                 {
-                    <div class="forEach-AlignClass">
+                    <div class="forEach-AlignClass" style="position: relative;">
                         <div class="PhotoSection-Child">
                             <img src="@post.PhotoPath" alt="Post Photo" class="PhotoSectionImg" />
+                            <a href="javascript:void(0);" class="three-dots-menu" onclick="toggleMenu('@post.PostId');">
+                                <img src="/images/three-dots-vertical.svg" id="@post.PostId" style="height: 30px; padding: 5px;" />
+                            </a>
+                            <ul class="post-menu" id="post-menu-@post.PostId">
+                                <li><a href="javascript:void(0);" onclick="editPost('@post.PostId');" class="text-decoration-none">Edit</a></li>
+                                <li><a href="javascript:void(0);" onclick="deletePost('@post.PostId');" class="text-decoration-none">Delete</a></li>
+                            </ul>
                         </div>
                         <div>@post.PostCaption</div>
                     </div>
                 }
             </div>
         }
+
+
+
+
+
         <div class="fixed-bottom" style="margin: 0px 0px 25px 0px;">
             <div class="bottom-buttons">
                 <a class="feed" href="@Url.Action("Feed", "Account")">Following Feed</a>
@@ -217,5 +287,52 @@
         }).save().then(() => {
             element.style.display = 'none';
         });
+    }
+
+    function toggleMenu(postId) {
+        // Hide all menus
+        var allMenus = document.querySelectorAll('.post-menu');
+        allMenus.forEach(function (menu) {
+            if (menu.id !== 'post-menu-' + postId) {
+                menu.style.display = 'none';
+            }
+        });
+
+        // Toggle the clicked menu
+        var menu = document.getElementById('post-menu-' + postId);
+        if (menu) {
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
+    }
+
+    function editPost(postId) {
+        // Redirect to the edit page or open an edit modal
+        window.location.href = '@Url.Action("EditPost", "Account")?id=' + postId;
+    }
+
+    function deletePost(postId) {
+        if (confirm('Are you sure you want to delete this post?')) {
+            $.ajax({
+                url: '@Url.Action("DeletePost", "Account")',
+                type: 'POST',
+                data: { id: postId },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success('Post deleted successfully');
+                        location.reload(); // Reload the page to update the post list
+                    } else {
+                        toastr.error('Failed to delete post');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error deleting post:', error);
+                    toastr.error('Error deleting post');
+                }
+            });
+        }
     }
 </script>

@@ -29,12 +29,6 @@ namespace Social_Media_Project.Controllers.API
         }
 
 
-        public class ChatMessageRequest
-        {
-            public string RecipientUserId { get; set; }
-            public string MessageContent { get; set; }
-        }
-
         #region "GetChatMessage"
         [HttpGet]
         public IActionResult GetChatMessage(string Id = "", string UserId = "")
