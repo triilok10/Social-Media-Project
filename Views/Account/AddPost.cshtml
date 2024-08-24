@@ -23,8 +23,13 @@
         <h2>Add New Post</h2>
         <form class="add-post-form" method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="AddPost">
             <input type="hidden" asp-for="hdnId" value="1" />
+            <input type="hidden" asp-for="Id" />
             <div id="ProfilePhotoPreview" class="mt-2" style="display:flex; justify-content:center;">
                 <img id="previewImage" src="#" alt="Preview" style="width: 200px; height: 200px !important; display: none; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
+                @if (ViewBag.PhotoPath != null)
+                {
+                    <img src="@ViewBag.PhotoPath" class="EditClass" style="width: 200px; height: 200px !important; border: 1px solid black; border-radius: 50%; margin: 10px; padding: 5px;" />
+                }
             </div>
             <div class="form-group">
                 <label for="postImage">Choose an Image:</label>
@@ -59,8 +64,10 @@
                 preview.src = e.target.result;
                 preview.style.display = 'block';
             }
-
             reader.readAsDataURL(input.files[0]);
+            $(".EditClass").addClass('d-none');
         }
     }
+
+  
 </script>

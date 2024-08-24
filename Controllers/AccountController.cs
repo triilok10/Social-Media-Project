@@ -323,7 +323,7 @@ namespace Social_Media_Project.Controllers
 
         #region "Add Post"
         [HttpGet, HttpPost]
-        public async Task<IActionResult> AddPost(MediaPost pPost, IFormFile AddPostPhoto)
+        public async Task<IActionResult> AddPost(MediaPost pPost, IFormFile AddPostPhoto, int PostId = 0)
         {
             string Message = "";
             try
@@ -332,7 +332,7 @@ namespace Social_Media_Project.Controllers
                 var userId = _sessionService.GetInt32("UserId");
                 if (username != null && userId != null)
                 {
-                    if (pPost.hdnId == 1)
+                    if (pPost.hdnId == 1 && pPost.hdnId == null)
                     {
                         if (pPost.AddPostPhoto != null)
                         {
@@ -382,6 +382,71 @@ namespace Social_Media_Project.Controllers
                             TempData["errorMessage"] = Message;
                             TempData.Keep("errorMessage");
                             return View();
+                        }
+                    }
+                    else if (PostId != null && pPost.Id == null && PostId > 0)
+                    {
+                        string EditURL = baseUrl + $"api/AccountAPI/UpdatePost?PostId={PostId}";
+
+                        HttpResponseMessage editRes = await _httpClient.GetAsync(EditURL);
+                        if (editRes.IsSuccessStatusCode)
+                        {
+                            string editBody = await editRes.Content.ReadAsStringAsync();
+
+                            MediaPost obj = JsonConvert.DeserializeObject<MediaPost>(editBody);
+                            ViewBag.PhotoPath = obj.PhotoPath;
+
+                            return View(obj);
+                        }
+                        else
+                        {
+                            return BadRequest("Data didnt fetched!");
+                        }
+
+                    }
+                    else if (PostId == 0 && pPost.Id > 0)
+                    {
+
+                        if (pPost.AddPostPhoto != null)
+                        {
+                            string FileName = Path.GetFileName(AddPostPhoto.FileName);
+                            string FileData = Path.Combine("wwwroot", "images", "UserPost");
+                            if (!Directory.Exists(FileData))
+                            {
+                                Directory.CreateDirectory(FileData);
+                            }
+                            string FilePath = Path.Combine(FileData, FileName);
+                            using (var Stream = new FileStream(FilePath, FileMode.Create))
+                            {
+                                await AddPostPhoto.CopyToAsync(Stream);
+                            }
+                        }
+
+                        string UpdatePost = baseUrl + "api/AccountAPI/UpdatePostSection";
+
+                        var JsonData = new
+                        {
+                            pPost.Id,
+                            pPost.PhotoPath,
+                            pPost.PostCaption
+                        };
+
+                        string con = JsonConvert.SerializeObject(JsonData);
+                        StringContent Content = new StringContent(con, Encoding.UTF8, "application/json");
+                        HttpResponseMessage res = await _httpClient.PostAsync(UpdatePost, Content);
+                        if (res.IsSuccessStatusCode)
+                        {
+                            string resBody = await res.Content.ReadAsStringAsync();
+                            dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                            Message = resData.msg;
+                            TempData["successMessage"] = Message;
+                            TempData.Keep("successMessage");
+                            return RedirectToAction("UserAccountPage");
+
+                        }
+                        else
+                        {
+                            return BadRequest("Unable to update the Post");
                         }
                     }
                     else

@@ -680,5 +680,88 @@ namespace Social_Media_Project.Controllers.API
 
         #endregion
 
+
+        #region "Edit Post Section GET/UPDATE"
+        [HttpGet]
+        public IActionResult UpdatePost(int PostId = 0)
+        {
+            string Message = "";
+            bool Response = false;
+            try
+            {
+                if (PostId != null && PostId > 0)
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        SqlCommand cmd = new SqlCommand("usp_UserPost", con);
+                        con.Open();
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Mode", 4);
+                        cmd.Parameters.AddWithValue("@Id", PostId);
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            if (rdr.Read())
+                            {
+                                MediaPost obj = new MediaPost
+                                {
+                                    Id = Convert.ToInt32(rdr["Id"]),
+                                    PostCaption = Convert.ToString(rdr["PostCaption"]),
+                                    PhotoPath = Convert.ToString(rdr["PhotoPath"])
+                                };
+                                return Ok(obj);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Message = "Please pass the required Parameter";
+                    Response = false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                Response = false;
+            }
+            return Ok(new
+            {
+                msg = Message,
+                Response = Response
+            });
+        }
+        [HttpPost]
+        public IActionResult UpdatePostSection([FromBody] MediaPost objMediaPost)
+        {
+            string Message = "";
+            bool Response = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_UserPost", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Mode", 5);
+                    cmd.Parameters.AddWithValue("@Id", objMediaPost.Id);
+                    cmd.Parameters.AddWithValue("@Photopath", objMediaPost.PhotoPath);
+                    cmd.Parameters.AddWithValue("@PostCaption", objMediaPost.PostCaption);
+                    cmd.ExecuteNonQuery();
+                    Message = "Post updated successfully";
+                    Response = true;
+                    return Ok(new { msg = Message, res = Response });
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                Response = false;
+                return Ok(new { msg = Message, res = Response });
+            }
+
+        }
+        #endregion
     }
 }

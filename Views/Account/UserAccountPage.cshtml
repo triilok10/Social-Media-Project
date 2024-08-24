@@ -190,7 +190,7 @@
                                 <img src="/images/three-dots-vertical.svg" id="@post.PostId" style="height: 30px; padding: 5px;" />
                             </a>
                             <ul class="post-menu" id="post-menu-@post.PostId">
-                                <li><a href="javascript:void(0);" onclick="editPost('@post.PostId');" class="text-decoration-none">Edit</a></li>
+                                <li><a href="@Url.Action("AddPost","Account")?PostId=@post.PostId" class="text-decoration-none">Edit</a></li>
                                 <li><a href="javascript:void(0);" onclick="deletePost('@post.PostId');" class="text-decoration-none">Delete</a></li>
                             </ul>
                         </div>
@@ -309,10 +309,6 @@
         }
     }
 
-    function editPost(postId) {
-        // Redirect to the edit page or open an edit modal
-        window.location.href = '@Url.Action("EditPost", "Account")?id=' + postId;
-    }
 
     function deletePost(postId) {
         if (confirm('Are you sure you want to delete this post?')) {
