@@ -328,6 +328,9 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
                 var username = _sessionService.GetString("Username");
                 var userId = _sessionService.GetInt32("UserId");
                 if (username != null && userId != null)
@@ -482,6 +485,9 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
                 var username = _sessionService.GetString("Username");
                 var userId = _sessionService.GetInt32("UserId");
                 if (username != null && userId != null)
@@ -627,9 +633,10 @@ namespace Social_Media_Project.Controllers
                     int userId = resData.id;
                     if (resData.msg == "Email already exists.")
                     {
-                        TempData["errorMessage"] = message;
-                        TempData.Keep("errorMessage");
-                        return RedirectToAction("Index", "Home");
+                        string username = resData.username;
+                        _sessionService.SetInt32("UserId", userId);
+                        _sessionService.SetString("Username", username);
+                        return RedirectToAction("UserAccountPage", "Account");
                     }
                     else
                     {
@@ -659,6 +666,9 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
                 var Id = _sessionService.GetInt32("UserId");
                 var Data = _sessionService.GetString("hdnData");
                 if (Id != null && Data != null)
@@ -750,7 +760,9 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
-
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
                 var UserId = _sessionService.GetInt32("UserId");
                 var Username = _sessionService.GetString("Username");
                 if (UserId != null && Username != null)
@@ -841,6 +853,9 @@ namespace Social_Media_Project.Controllers
             string Message = "";
             try
             {
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
 
                 var UserId = _sessionService.GetInt32("UserId");
                 var UserName = _sessionService.GetString("Username");
@@ -946,6 +961,9 @@ namespace Social_Media_Project.Controllers
 
             try
             {
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
                 var UserId = _sessionService.GetInt32("UserId");
                 var Username = _sessionService.GetString("Username");
 
@@ -993,7 +1011,9 @@ namespace Social_Media_Project.Controllers
             bool isFollowing = false;
             try
             {
-
+                string currentActionUrl = HttpContext.Request.Path;
+                TempData["currentActionUrl"] = currentActionUrl;
+                TempData.Keep("currentActionUrl");
                 var UserId = _sessionService.GetInt32("UserId");
                 var Username = _sessionService.GetString("Username");
                 if (UserId != null && Username != null)

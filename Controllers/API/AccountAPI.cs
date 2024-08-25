@@ -164,9 +164,9 @@ namespace Social_Media_Project.Controllers.API
                         if (rdr.Read())
                         {
                             objAccount.Fullname = Convert.ToString(rdr["FullName"]);
-                            objAccount.ProfilePhotoPath = Convert.ToString(rdr["ProfilePhotoPath"]);
-                            objAccount.Bio = Convert.ToString(rdr["ProfileBio"]);
-                            objAccount.DateOfBirth = Convert.ToDateTime(rdr["DateOfBirth"]);
+                            objAccount.ProfilePhotoPath = Convert.IsDBNull(rdr["ProfilePhotoPath"]) ? null : Convert.ToString(rdr["ProfilePhotoPath"]);
+                            objAccount.Bio = Convert.IsDBNull(rdr["ProfileBio"]) ? null : Convert.ToString(rdr["ProfileBio"]);
+                            objAccount.DateOfBirth = Convert.IsDBNull(rdr["DateOfBirth"]) ? (DateTime?)null : Convert.ToDateTime(rdr["DateOfBirth"]);
                             objAccount.Username = Convert.ToString(rdr["Username"]);
                             objAccount.Id = Convert.ToInt32(rdr["Id"]);
                         }

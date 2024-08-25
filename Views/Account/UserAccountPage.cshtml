@@ -126,6 +126,7 @@
             <div class="UserAccountPage-Data">
                 <div class="profilePicStyle">
                     <div class="profilePic-Align">
+                       
                         <img src="@ViewBag.profilePhotoPath" alt="Profile Photo" class="userAccountPage-ProfileImg" />
                     </div>
                     <div>@ViewBag.fullname</div>
@@ -160,7 +161,7 @@
                         <a href="#download-profile-data" onclick="generatePDF();" class="text-decoration-none">Download Profile Data</a>
                     </li>
                     <li class="listData">
-                        <a href="@Url.Action("","")" class="text-decoration-none">Delete Account</a>
+                        <a href="Javascript:Void()" onclick="js_DeleteCreateAccount()" class="text-decoration-none">Delete Account</a>
                     </li>
                     <li class="listData">
                         <a href="@Url.Action("Logout","Account")" class="text-decoration-none">Logout</a>

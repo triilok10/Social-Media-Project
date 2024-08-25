@@ -23,6 +23,7 @@ namespace Social_Media_Project.Controllers.API
         {
             string Message = "";
             string UserId = "";
+            string Username = "";
             try
             {
                 string Name = googleAuth.Name.Replace("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name:", "").Trim();
@@ -50,11 +51,16 @@ namespace Social_Media_Project.Controllers.API
                     userId.Direction = ParameterDirection.Output;
                     cmd.Parameters.Add(userId);
 
+                    SqlParameter UsernameLogin = new SqlParameter("@UsernameLogin", SqlDbType.VarChar, 50);
+                    UsernameLogin.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(UsernameLogin);
+
                     cmd.ExecuteNonQuery();
                     Message = message.Value.ToString();
                     UserId = userId.Value.ToString();
+                    Username = UsernameLogin.Value.ToString();
                 }
-                return Ok(new { msg = Message, id = UserId });
+                return Ok(new { msg = Message, id = UserId, username = Username });
             }
             catch (Exception ex)
             {
@@ -88,6 +94,10 @@ namespace Social_Media_Project.Controllers.API
                     SqlParameter userId = new SqlParameter("@UserId", SqlDbType.Int);
                     userId.Direction = ParameterDirection.Output;
                     cmd.Parameters.Add(userId);
+
+                    SqlParameter UsernameLogin = new SqlParameter("@UsernameLogin", SqlDbType.VarChar, 50);
+                    UsernameLogin.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(UsernameLogin);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -131,6 +141,10 @@ namespace Social_Media_Project.Controllers.API
                         SqlParameter message = new SqlParameter("@Message", SqlDbType.VarChar, 200);
                         message.Direction = ParameterDirection.Output;
                         cmd.Parameters.Add(message);
+
+                        SqlParameter UsernameLogin = new SqlParameter("@UsernameLogin", SqlDbType.VarChar, 50);
+                        UsernameLogin.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(UsernameLogin);
 
                         SqlParameter userId = new SqlParameter("@UserId", SqlDbType.Int);
                         userId.Direction = ParameterDirection.Output;
