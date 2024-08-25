@@ -50,10 +50,7 @@
         //PostId
         public int? PostId { get; set; }
 
-        //FCMTOKEN
-        public string? FCMToken { get; set; }
-
-        //FCM Token
-        public string? UserFcmToken { get; set; }
+        //HdnPostPhotoPath
+        public string? HdnPostPhotoPath { get; set; }
     }
 }

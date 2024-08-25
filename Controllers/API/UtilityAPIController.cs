@@ -261,6 +261,34 @@ namespace Social_Media_Project.Controllers.API
 
         #endregion
 
+        #region "Delete Post"
+        [HttpDelete]
+        public IActionResult DeletePost(int Id)
+        {
+            string Message = "";
+            bool response = false;
 
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_UserPost", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 6);
+                    cmd.Parameters.AddWithValue("@Id", Id);
+                    cmd.ExecuteNonQuery();
+                    Message = "Post deleted successfully";
+                    response = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message; response = false;
+
+            }
+            return Ok(new { msg = Message, res = response });
+        }
+        #endregion
     }
 }

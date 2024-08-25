@@ -706,7 +706,8 @@ namespace Social_Media_Project.Controllers.API
                                 {
                                     Id = Convert.ToInt32(rdr["Id"]),
                                     PostCaption = Convert.ToString(rdr["PostCaption"]),
-                                    PhotoPath = Convert.ToString(rdr["PhotoPath"])
+                                    PhotoPath = Convert.ToString(rdr["PhotoPath"]),
+                                    HdnPostPhotoPath = Convert.ToString(rdr["PhotoPath"])
                                 };
                                 return Ok(obj);
                             }

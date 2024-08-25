@@ -332,7 +332,7 @@ namespace Social_Media_Project.Controllers
                 var userId = _sessionService.GetInt32("UserId");
                 if (username != null && userId != null)
                 {
-                    if (pPost.hdnId == 1 && pPost.hdnId == null)
+                    if (pPost.hdnId == 1 &&  AddPostPhoto !=null && pPost.Id ==null)
                     {
                         if (pPost.AddPostPhoto != null)
                         {
@@ -420,9 +420,18 @@ namespace Social_Media_Project.Controllers
                             {
                                 await AddPostPhoto.CopyToAsync(Stream);
                             }
+                            pPost.PhotoPath = "/images/UserPost/" + FileName;
+                        }
+                        else
+                        {
+                            pPost.PhotoPath = pPost.HdnPostPhotoPath;
+
+
                         }
 
                         string UpdatePost = baseUrl + "api/AccountAPI/UpdatePostSection";
+
+
 
                         var JsonData = new
                         {
@@ -1041,6 +1050,42 @@ namespace Social_Media_Project.Controllers
             return Json(new { response, isFollowing });
         }
 
+        #endregion
+
+        #region "Delete Post"
+        [HttpDelete]
+        public async Task<IActionResult> DeletePost(int id)
+        {
+            string Message = "";
+            bool response = false;
+            try
+            {
+                if (id != null)
+                {
+                    string deleteUrl = baseUrl + $"api/UtilityAPI/DeletePost?Id={id}";
+                    HttpResponseMessage res = await _httpClient.DeleteAsync(deleteUrl);
+                    if (res.IsSuccessStatusCode)
+                    {
+
+                        string resBody = await res.Content.ReadAsStringAsync();
+                        dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                        response = resData.res;
+                        if (response == true)
+                        {
+                            Message = resData.msg;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                response = false;
+            }
+
+
+            return Json(new { msg = Message, res = response });
+        }
         #endregion
     }
 }
